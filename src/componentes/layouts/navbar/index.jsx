@@ -1,0 +1,111 @@
+import { useLocation, useNavigate, Link } from 'react-router-dom'
+import $ from 'jquery';
+
+import './styles.css'
+
+function Navbar() {
+
+    var Navegacao = useNavigate();
+
+    function updateMenu() {
+        if (document.getElementById('responsive-menu').checked == true) {
+          document.getElementById('menu').style.borderBottomRightRadius = '0';
+          document.getElementById('menu').style.borderBottomLeftRadius = '0';
+        }else{
+          document.getElementById('menu').style.borderRadius = '10px';
+        }
+    }
+
+    $(document).ready(function() {
+        function resetarSeletor() {
+            var tabsNewAnim = $('#navbarSupportedContent');
+            var selectorNewAnim = $('#navbarSupportedContent').find('li').length;
+            var activeItemNewAnim = tabsNewAnim.find('.active');
+            var activeWidthNewAnimHeight = activeItemNewAnim.innerHeight();
+            var activeWidthNewAnimWidth = activeItemNewAnim.innerWidth();
+            var itemPosNewAnimTop = activeItemNewAnim.position();
+            var itemPosNewAnimLeft = activeItemNewAnim.position();
+
+            $('.hori-selector').css({
+                'top': itemPosNewAnimTop.top + 'px',
+                'left': itemPosNewAnimLeft.left + 'px',
+                'height': activeWidthNewAnimHeight + 'px',
+                'width': activeWidthNewAnimWidth + 'px'
+            });
+        }
+
+        $('#navbarSupportedContent').on('click', 'li', function(e) {
+            $('#navbarSupportedContent ul li').removeClass('active');
+            $(this).addClass('active');
+
+            var activeWidthNewAnimHeight = $(this).innerHeight();
+            var activeWidthNewAnimWidth = $(this).innerWidth();
+            var itemPosNewAnimTop = $(this).position();
+            var itemPosNewAnimLeft = $(this).position();
+
+            $('.hori-selector').css({
+                'top': itemPosNewAnimTop.top + 'px',
+                'left': itemPosNewAnimLeft.left + 'px',
+                'height': activeWidthNewAnimHeight + 'px',
+                'width': activeWidthNewAnimWidth + 'px'
+            });
+        });
+
+        $('.navbar-toggler').click(function() {
+            setTimeout(function() {
+                resetarSeletor();
+            }, 500);
+        });
+
+        $(window).resize(function() {
+            setTimeout(function() {
+                resetarSeletor();
+            }, 500);
+        });
+
+        setTimeout(function() {
+            resetarSeletor();
+        }, 500);
+    });
+
+    var caminho_atual = useLocation();
+    if (caminho_atual.pathname !== '/login' && caminho_atual.pathname !== '/registro') {
+        return (
+
+            <nav className='navbar navbar-expand-lg navbar-light m-2 navbar-mainbg'>
+                <a class='navbar-brand navbar-logo' href='#'>Olá, {localStorage.getItem('nome_usuario_vantagem')}!</a>
+                <button className='navbar-toggler' type='button' data-bs-toggle='collapse' data-bs-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation'>
+                    <i class='fa fa-bars text-white'></i>
+                </button>
+                <div className='collapse navbar-collapse' id='navbarSupportedContent'>
+                    <ul className='navbar-nav mx-auto'>
+                        <div class='hori-selector'>
+                            <div class='left'></div>
+                            <div class='right'></div>
+                        </div>
+                        <li className='nav-item active px-2'>
+                            <a className='nav-link' href='javascript:void(0);'><i class='fa fa-tachometer'></i> Início</a>
+                        </li>
+                        <li className='nav-item px-2'>
+                            <a className='nav-link' href='javascript:void(0);'><i class='fa fa-users'></i> Alunos</a>
+                        </li>
+                        <li className='nav-item px-2'>
+                            <a className='nav-link' href='javascript:void(0);'><i class='fa fa-graduation-cap'></i> Escolas</a>
+                        </li>
+                        <li className='nav-item px-2'>
+                            <a className='nav-link' href='javascript:void(0);'><i class='fa fa-map-marker'></i> Rotas</a>
+                        </li>
+                        <li className='nav-item px-2'>
+                            <a className='nav-link' href='javascript:void(0);'><i class='fa fa-usd' aria-hidden='true'></i> Mensalidades</a>
+                        </li>
+                        <li className='nav-item px-2' id='navbar-perfil'>
+                            <a href='javascript:void(0);' onClick={() => Navegacao('/perfil')}><i class='fa fa-user'></i> Meu Perfil</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        )
+    }
+}
+
+export default Navbar

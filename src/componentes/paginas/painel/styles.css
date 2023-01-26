@@ -1,0 +1,57 @@
+.bg-primary {
+    background-color: #fec63a !important;
+}
+
+.btn-primary {
+    background-color: #fec63a !important;
+    border-color: transparent !important;
+}
+
+.form-control:focus {
+    border-color: #fec63a;
+    box-shadow: 0 0 0 0.2rem #fce6ae;
+}
+
+.btn-primary:hover {
+    background-color: #dfae35 !important;
+}
+
+.btn.btn-primary:focus,
+.btn.btn-primary:active,
+.btn.btn-primary.active {
+    box-shadow: 0 0 0 0.2rem #fce6ae;
+}
+
+a {
+    color: #dfae35 !important;
+    text-decoration: none !important;
+}
+
+a:hover {
+    color: #c49a2f !important;
+}
+
+.bordas-arredondadas {
+    border-radius: 20px !important;
+}
+
+:root {
+    --toastify-color-light: #fff;
+    --toastify-color-info: #aaaaaa;
+    --toastify-color-success: #f1c40f;
+    --toastify-color-error: #e74c3c;
+}
+
+body::-webkit-scrollbar {
+    display: none !important;
+}
+
+::-moz-selection {
+    color: white;
+    background: #ebc053;
+}
+
+::selection {
+    color: white;
+    background: #ebc053;
+}
