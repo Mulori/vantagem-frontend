@@ -13,6 +13,7 @@ function Perfil(){
     const Navegacao = useNavigate();
     const [nomeCompleto, setNomeCompleto] = useState('');
     const [ultimaAlteracao, setUltimaAlteracao] = useState('');
+    const [membroDesde, setMembroDesde] = useState('');
     const [nome, setNome] = useState('');
     const [sobrenome, setSobrenome] = useState('');
     const [email, setEmail] = useState('');
@@ -71,9 +72,11 @@ function Perfil(){
         api.get('/api/v1/usuarios/' + codigo_usuario, { headers: { Authorization: localStorage.getItem('token_usuario_vantagem') } } )
         .then((res) => {
             var ultAlt = new Date(res.data.alterado);
+            var cadastrado = new Date(res.data.cadastrado);
 
             setNomeCompleto(res.data.nome + ' ' + res.data.sobrenome)
             setUltimaAlteracao(new Intl.DateTimeFormat('pt-BR', { day: 'numeric', month: 'short', year: 'numeric'} ).format(ultAlt))
+            setMembroDesde(new Intl.DateTimeFormat('pt-BR', { day: 'numeric', month: 'short', year: 'numeric'} ).format(cadastrado))
             setNome(res.data.nome);
             setSobrenome(res.data.sobrenome);
             setEmail(res.data.email);
@@ -139,7 +142,7 @@ function Perfil(){
                                     <div className='row'>
                                         <div className='col-12 col-sm-auto mb-3 d-flex justify-content-center'>
                                             <div id='div-imagem-perfil'>
-                                                <img src={!urlAvatar ? semAvatar : urlAvatar} className='imagem-avatar imagem-cicle imagem-thumbnail mx-auto'/>
+                                                <img src={semAvatar} className='imagem-avatar imagem-cicle imagem-thumbnail mx-auto'/>
                                             </div>
                                         </div>                                            
                                         <div className='col d-flex flex-column flex-sm-row justify-content-between mb-3'>
@@ -147,7 +150,7 @@ function Perfil(){
                                                 <h4>{nomeCompleto}</h4>
                                                 { tipoCadastro == '2' ? <Badge bg='secondary'>Motorista</Badge> : <Badge bg='secondary'>Aluno/Responsável</Badge> }
                                                 <div className='col'>  
-                                                    <span className='lbUltimaAlteracao'>Ultima atualização: {ultimaAlteracao}</span>    
+                                                    <span className='lbUltimaAlteracao'>Membro desde: {membroDesde}</span>    
                                                 </div>                                                    
                                                 <div className='col'>   
                                                     <button type='button' class='btn btn-primary bordas-arredondadas mt-2' onClick={abrirModalImagem}><i class='fa fa-fw fa-camera'></i> Alterar Imagem de Perfil</button>                                        
