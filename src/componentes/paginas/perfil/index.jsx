@@ -1,23 +1,26 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom'
+
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import './styles.css'
 import semAvatar from '../../../images/imagem-sem-avatar.jpg'
 import { Card, Badge, Modal } from 'react-bootstrap';
 import $ from 'jquery';
-import AvatarEditor from 'react-avatar-editor'
+import InputMask from 'react-input-mask';
 import api from '../../../controller/api';
 import apiImgur from '../../../controller/apiImgur';
+
+import { removerMascara, formataStringData, formatarCPFCNPJ } from '../../../componentes/funcoes/geral';
 
 function Perfil(){
     const Navegacao = useNavigate();
     const [nomeCompleto, setNomeCompleto] = useState('');
-    const [ultimaAlteracao, setUltimaAlteracao] = useState('');
     const [membroDesde, setMembroDesde] = useState('');
     const [nome, setNome] = useState('');
     const [sobrenome, setSobrenome] = useState('');
     const [email, setEmail] = useState('');
-    const [urlAvatar, setUrlAvatar] = useState('');
     const [documento, setDocumento] = useState('');
     const [dataNascimento, setDataNascimento] = useState('');
     const [cnh, setCnh] = useState('');
@@ -26,7 +29,6 @@ function Perfil(){
     const [tipoCadastro, setTipoCadastro] = useState('');
     const [modalSenha, setModalSenha] = useState(false);
     const [modalImagem, setModalImagem] = useState(false);
-    const [urlImagem, setUrlImagem] = useState('');
 
     const abrirModalSenha = () => setModalSenha(true);
     const fecharModalSenha = () => setModalSenha(false);
@@ -71,16 +73,13 @@ function Perfil(){
 
         api.get('/api/v1/usuarios/' + codigo_usuario, { headers: { Authorization: localStorage.getItem('token_usuario_vantagem') } } )
         .then((res) => {
-            var ultAlt = new Date(res.data.alterado);
             var cadastrado = new Date(res.data.cadastrado);
 
-            setNomeCompleto(res.data.nome + ' ' + res.data.sobrenome)
-            setUltimaAlteracao(new Intl.DateTimeFormat('pt-BR', { day: 'numeric', month: 'short', year: 'numeric'} ).format(ultAlt))
-            setMembroDesde(new Intl.DateTimeFormat('pt-BR', { day: 'numeric', month: 'short', year: 'numeric'} ).format(cadastrado))
+            setNomeCompleto(res.data.nome + ' ' + res.data.sobrenome);
+            setMembroDesde(new Intl.DateTimeFormat('pt-BR', { day: 'numeric', month: 'short', year: 'numeric'} ).format(cadastrado));
             setNome(res.data.nome);
             setSobrenome(res.data.sobrenome);
             setEmail(res.data.email);
-            setUrlAvatar(res.data.url_avatar);
             setDocumento(res.data.documento);
             setDataNascimento(res.data.data_nascimento);
             setCnh(res.data.cnh);
@@ -94,21 +93,25 @@ function Perfil(){
     }
 
     function AlterarInformacoesPessoais(e){
-        e.preventDefalt();
-    }
+        e.preventDefault();
 
-    const MyEditor = () => {
-        return (
-          <AvatarEditor
-            image={urlImagem}
-            width={250}
-            height={250}
-            border={50}
-            color={[255, 255, 255, 0.6]} // RGBA
-            scale={1.2}
-            rotate={0}
-          />
-        )
+        let json = {
+            nome: nome.trim(),
+            sobrenome: sobrenome.trim(),
+            celular: !celular ? "" : removerMascara(celular),
+            data_nascimento: !dataNascimento ? "" : formataStringData(dataNascimento),
+            sobre_mim: !sobreMim ? "" : sobreMim,
+        }
+
+        api.put("/api/v1/usuarios/" + localStorage.getItem("codigo_usuario_vantagem") + "/alteraInformacao", json, { headers: { Authorization: localStorage.getItem('token_usuario_vantagem') } })
+        .then((ret) => {
+            notificarSucesso(ret.data);
+        })
+        .catch((err) => {
+            console.log(err)
+            notificarErro(err.response.data);
+            return;
+        });
     }
 
     var caminho_atual = useLocation();
@@ -130,6 +133,30 @@ function Perfil(){
         }
     });
 
+    const notificarErro = (e) => toast.error(e, {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        icon: false,
+    });
+
+    const notificarSucesso = (e) => toast.success(e, {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        icon: false,
+    });
+
     return(
         <div className='p-2'>
             <Card className='card-pers p-0'>
@@ -148,7 +175,7 @@ function Perfil(){
                                         <div className='col d-flex flex-column flex-sm-row justify-content-between mb-3'>
                                             <div className='col flex-column my-auto' id='card-dados'>
                                                 <h4>{nomeCompleto}</h4>
-                                                { tipoCadastro == '2' ? <Badge bg='secondary'>Motorista</Badge> : <Badge bg='secondary'>Aluno/Responsável</Badge> }
+                                                { tipoCadastro === '2' ? <Badge bg='secondary'>Motorista</Badge> : <Badge bg='secondary'>Aluno/Responsável</Badge> }
                                                 <div className='col'>  
                                                     <span className='lbUltimaAlteracao'>Membro desde: {membroDesde}</span>    
                                                 </div>                                                    
@@ -179,10 +206,10 @@ function Perfil(){
                                                     </div>
                                                     <div className='form-row mt-3 d-flex flex-column flex-sm-row'>
                                                         <div className='form-group mx-1 col'>
-                                                            <label>Documento (CPF/CNPJ)</label>
-                                                            <input className='form-control bordas-arredondadas' maxLength={15} readOnly required value={documento} onChange={(e) => setDocumento(e.target.value)} placeholder='Seu Documento (CPF/CNPJ)' />
+                                                            <label>CPF/CNPJ:</label>
+                                                            <input className='form-control bordas-arredondadas' maxLength={15} readOnly required value={formatarCPFCNPJ(documento)} onChange={(e) => setDocumento(e.target.value)} placeholder='Seu Documento (CPF/CNPJ)' />
                                                         </div>
-                                                        { tipoCadastro == '2' ?
+                                                        { tipoCadastro === '2' ?
                                                         <div className='form-group mx-1 col'>
                                                             <label>CNH</label>
                                                             <input className='form-control bordas-arredondadas' maxLength={15} readOnly value={cnh} onChange={(e) => setCnh(e.target.value)} placeholder='Seu Registro da CNH' />
@@ -190,11 +217,11 @@ function Perfil(){
                                                         : null }
                                                         <div className='form-group mx-1 col'>
                                                             <label>Celular</label>
-                                                            <input className='form-control bordas-arredondadas' readOnly value={dataNascimento} onChange={(e) => dataNascimento(e.target.value)} placeholder='Seu Número de Celular' />
+                                                            <InputMask className='form-control bordas-arredondadas' required mask="(99) 9.9999-9999" placeholder='(00) 0.0000-0000' value={celular} onChange={(e) => setCelular(e.target.value)}></InputMask>
                                                         </div>
                                                         <div className='form-group mx-1 col'>
                                                             <label>Data de Nascimento</label>
-                                                            <input className='form-control bordas-arredondadas' maxLength={12} value={celular} onChange={(e) => setCelular(e.target.value)} placeholder='Sua Data de Nascimento' />
+                                                            <InputMask className='form-control bordas-arredondadas' required mask="99/99/9999" placeholder='00/00/0000' value={dataNascimento} onChange={(e) => setDataNascimento(e.target.value)}></InputMask>
                                                         </div>                                                           
                                                     </div>
                                                     <div className='form-row mt-3 d-flex flex-column flex-sm-row'>
@@ -212,7 +239,7 @@ function Perfil(){
                                             </Card.Body>
                                         </Card>  
                                     </div>
-                                    { tipoCadastro == '2' ?
+                                    { tipoCadastro === '2' ?
                                     <div className='row p-1' >
                                         <Card className='card-pers h-100 w-100'>
                                             <Card.Body>
@@ -330,7 +357,7 @@ function Perfil(){
                 <Modal.Body>
                     <div class='img-container text-center'>
                         <div class='row'>
-                            <MyEditor/>
+
                         </div>
                     </div>
                 </Modal.Body>
@@ -347,6 +374,8 @@ function Perfil(){
                     </div>
                 </Modal.Footer>
             </Modal>
+
+            <ToastContainer />
         </div>
     )
 }
