@@ -29,6 +29,9 @@ function Perfil(){
     const [tipoCadastro, setTipoCadastro] = useState('');
     const [modalSenha, setModalSenha] = useState(false);
     const [modalEmail, setModalEmail] = useState(false);
+    const [senhaAntiga, setSenhaAntiga] = useState('');
+    const [senhaNova, setSenhaNova] = useState('');
+    const [senhaNovaConfirmar, setSenhaConfirmar] = useState('');
 
     const abrirModalSenha = () => setModalSenha(true);
     const fecharModalSenha = () => setModalSenha(false);
@@ -83,6 +86,27 @@ function Perfil(){
         api.put("/api/v1/usuarios/" + localStorage.getItem("codigo_usuario_vantagem") + "/alteraInformacao", json, { headers: { Authorization: localStorage.getItem('token_usuario_vantagem') } })
         .then((ret) => {
             notificarSucesso(ret.data);
+        })
+        .catch((err) => {
+            console.log(err)
+            notificarErro(err.response.data);
+            return;
+        });
+    }
+
+    function AlterarSenha(e) {
+        e.preventDefault();
+
+        let json = {
+            senha_antiga: !senhaAntiga ? "" : senhaAntiga.trim(),
+            senha_nova: !senhaNova ? "" : senhaNova.trim(),
+            confirma_senha: !senhaNovaConfirmar ? "" : senhaNovaConfirmar.trim(),
+        }
+
+        api.put("/api/v1/usuarios/" + localStorage.getItem("codigo_usuario_vantagem") + "/alteraSenha", json, { headers: {Authorization: localStorage.getItem('token_usuario_vantagem') }})
+        .then((ret) => {
+            notificarSucesso(ret.data);
+            fecharModalSenha();
         })
         .catch((err) => {
             console.log(err)
@@ -209,10 +233,7 @@ function Perfil(){
                                                             <label>Data de Nascimento</label>
                                                             <InputMask className='form-control bordas-arredondadas' required mask="99/99/9999" placeholder='00/00/0000' value={dataNascimento} onChange={(e) => setDataNascimento(e.target.value)}></InputMask>
                                                         </div>
-                                                        <div className='form-group mx-1 col'>
-                                                            <label>Data de Nascimento:</label>
-                                                            <input className='form-control bordas-arredondadas' maxLength={12} value={celular} onChange={(e) => setCelular(e.target.value)} placeholder='Sua Data de Nascimento' />          </div>                                                           
-                                                        </div>
+                                                    </div>
                                                     <div className='form-row mt-3 d-flex flex-column flex-sm-row'>
                                                         <div className='form-group mx-1 col'>
                                                             <label>Sobre Mim:</label>
@@ -320,25 +341,25 @@ function Perfil(){
                     </div>
                     <h4 className='modal-title mx-auto'>Redefinição de Senha</h4>
                 </Modal.Header>
-                <form action="">
+                <form method='POST' onSubmit={AlterarSenha}>
                     <Modal.Body>
                         <p className='text-center'>Para prosseguir com a alteração da sua senha, preencha os campos abaixo:</p>
                         <div className='form-group'>
                             <label>Senha Atual:</label>
-                            <input type='password' placeholder='Informe sua Senha Atual' className='form-control bordas-arredondadas'/>
+                            <input type='password' placeholder='Informe sua Senha Atual' onChange={(e) => setSenhaAntiga(e.target.value)} className='form-control bordas-arredondadas'/>
                         </div>
                         <div className='form-group mt-3'>
                             <label>Nova Senha:</label>
-                            <input type='password' placeholder='Informe a Senha Nova' className='form-control bordas-arredondadas'/>
+                            <input type='password' placeholder='Informe a Senha Nova' onChange={(e) => setSenhaNova(e.target.value)} className='form-control bordas-arredondadas'/>
                         </div>
                         <div className='form-group mt-3'>
                             <label>Confirmar a Nova Senha:</label>
-                            <input type='password' placeholder='Confirme a Senha Nova' className='form-control bordas-arredondadas'/>
+                            <input type='password' placeholder='Confirme a Senha Nova' onChange={(e) => setSenhaConfirmar(e.target.value)} className='form-control bordas-arredondadas'/>
                         </div>
                     </Modal.Body>
                     <Modal.Footer>
                         <div className='d-flex row w-100 gx-2 gy-2'>
-                            <div className='col-sm-6'><button className='btn w-100 btn-secondary bordas-arredondadas' data-dismiss='modal'><i className='fa fa-chevron-left' aria-hidden='true'></i> Voltar</button></div>
+                            <div className='col-sm-6'><button className='btn w-100 btn-secondary bordas-arredondadas' type='button' data-dismiss='modal'><i className='fa fa-chevron-left' aria-hidden='true'></i> Voltar</button></div>
                             <div className='col-sm-6'><button className='btn w-100 btn-primary bordas-arredondadas' type='submit'><i className='fa fa-check' aria-hidden='true'></i> Confirmar</button></div>
                         </div>
                     </Modal.Footer>
