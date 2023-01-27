@@ -10,12 +10,12 @@ import { Card, Badge, Modal } from 'react-bootstrap';
 import $ from 'jquery';
 import InputMask from 'react-input-mask';
 import api from '../../../controller/api';
-import apiImgur from '../../../controller/apiImgur';
-
-import { removerMascara, formataStringData, formatarCPFCNPJ } from '../../../componentes/funcoes/geral';
+import { removerMascara, formataStringData, formatarCPFCNPJ, formataDataHora } from '../../../componentes/funcoes/geral';
 
 function Perfil(){
     const Navegacao = useNavigate();
+    var caminho_atual = useLocation();
+
     const [nomeCompleto, setNomeCompleto] = useState('');
     const [membroDesde, setMembroDesde] = useState('');
     const [nome, setNome] = useState('');
@@ -32,6 +32,9 @@ function Perfil(){
     const [senhaAntiga, setSenhaAntiga] = useState('');
     const [senhaNova, setSenhaNova] = useState('');
     const [senhaNovaConfirmar, setSenhaConfirmar] = useState('');
+    const [novoEmail, setNovoEmail] = useState('');
+    const [confirmeEmail, setConfirmeEmail] = useState('');
+    const [senhaAlteraEmail, setSenhaAlteraEmail] = useState('');
 
     const abrirModalSenha = () => setModalSenha(true);
     const fecharModalSenha = () => setModalSenha(false);
@@ -46,6 +49,7 @@ function Perfil(){
 
     useEffect(() => {
         BaixarCadastro();
+        document.title = "VANTAGEM | Meu Perfil"
     }, []);
 
     function BaixarCadastro(){
@@ -61,7 +65,7 @@ function Perfil(){
             setSobrenome(res.data.sobrenome);
             setEmail(res.data.email);
             setDocumento(res.data.documento);
-            setDataNascimento(res.data.data_nascimento);
+            setDataNascimento(formataDataHora(res.data.data_nascimento.replace("00:00:00", "10:50:00")));
             setCnh(res.data.cnh);
             setCelular(res.data.celular);
             setSobreMim(res.data.sobre_mim);
@@ -86,9 +90,9 @@ function Perfil(){
         api.put("/api/v1/usuarios/" + localStorage.getItem("codigo_usuario_vantagem") + "/alteraInformacao", json, { headers: { Authorization: localStorage.getItem('token_usuario_vantagem') } })
         .then((ret) => {
             notificarSucesso(ret.data);
+            BaixarCadastro();
         })
         .catch((err) => {
-            console.log(err)
             notificarErro(err.response.data);
             return;
         });
@@ -106,16 +110,35 @@ function Perfil(){
         api.put("/api/v1/usuarios/" + localStorage.getItem("codigo_usuario_vantagem") + "/alteraSenha", json, { headers: {Authorization: localStorage.getItem('token_usuario_vantagem') }})
         .then((ret) => {
             notificarSucesso(ret.data);
+            BaixarCadastro();
             fecharModalSenha();
         })
         .catch((err) => {
-            console.log(err)
             notificarErro(err.response.data);
             return;
         });
     }
 
-    var caminho_atual = useLocation();
+    function AlterarEmail(e) {
+        e.preventDefault();
+
+        let json = {
+            email_novo: !novoEmail ? "" : novoEmail.trim(),
+            confirma_email: !confirmeEmail ? "" : confirmeEmail.trim(),
+            confirma_senha: !senhaAlteraEmail ? "" : senhaAlteraEmail.trim(),
+        }
+
+        api.put("/api/v1/usuarios/" + localStorage.getItem("codigo_usuario_vantagem") + "/alteraEmail", json, { headers: {Authorization: localStorage.getItem('token_usuario_vantagem') }})
+        .then((ret) => {
+            notificarSucesso(ret.data);
+            BaixarCadastro();
+            fecharModalEmail();
+        })
+        .catch((err) => {
+            notificarErro(err.response.data);
+            return;
+        });
+    }
 
     $(document).ready(function() {
 
@@ -162,7 +185,7 @@ function Perfil(){
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
-        progress: undefined,
+        progress: 0,
         theme: "light",
         icon: false,
     });
@@ -185,7 +208,7 @@ function Perfil(){
                                         <div className='col d-flex flex-column flex-sm-row justify-content-between mb-3'>
                                             <div className='col flex-column my-auto' id='card-dados'>
                                                 <h4>{nomeCompleto}</h4>
-                                                { tipoCadastro === '2' ? <Badge bg='secondary'>Motorista</Badge> : <Badge bg='secondary'>Aluno/Responsável</Badge> }
+                                                { tipoCadastro === 2 ? <Badge bg='secondary'>Motorista</Badge> : <Badge bg='secondary'>Aluno/Responsável</Badge> }
                                                 <div className='col'>  
                                                     <span className='lbUltimaAlteracao'>Membro desde: {membroDesde}</span>    
                                                 </div>                                                    
@@ -219,7 +242,7 @@ function Perfil(){
                                                             <label>CPF/CNPJ:</label>
                                                             <input className='form-control bordas-arredondadas' maxLength={15} readOnly required value={formatarCPFCNPJ(documento)} onChange={(e) => setDocumento(e.target.value)} placeholder='Seu Documento (CPF/CNPJ)' />
                                                         </div>
-                                                        { tipoCadastro === '2' ?
+                                                        { tipoCadastro === 2 ?
                                                         <div className='form-group mx-1 col'>
                                                             <label>CNH:</label>
                                                             <input className='form-control bordas-arredondadas' maxLength={15} readOnly value={cnh} onChange={(e) => setCnh(e.target.value)} placeholder='Seu Registro da CNH' />
@@ -249,7 +272,7 @@ function Perfil(){
                                             </Card.Body>
                                         </Card>  
                                     </div>
-                                    { tipoCadastro === '2' ?
+                                    { tipoCadastro === 2 ?
                                     <div className='row p-1' >
                                         <Card className='card-pers h-100 w-100'>
                                             <Card.Body>
@@ -346,20 +369,20 @@ function Perfil(){
                         <p className='text-center'>Para prosseguir com a alteração da sua senha, preencha os campos abaixo:</p>
                         <div className='form-group'>
                             <label>Senha Atual:</label>
-                            <input type='password' placeholder='Informe sua Senha Atual' onChange={(e) => setSenhaAntiga(e.target.value)} className='form-control bordas-arredondadas'/>
+                            <input type='password' placeholder='Informe sua Senha Atual' required onChange={(e) => setSenhaAntiga(e.target.value)} className='form-control bordas-arredondadas'/>
                         </div>
                         <div className='form-group mt-3'>
                             <label>Nova Senha:</label>
-                            <input type='password' placeholder='Informe a Senha Nova' onChange={(e) => setSenhaNova(e.target.value)} className='form-control bordas-arredondadas'/>
+                            <input type='password' placeholder='Informe a Senha Nova' required onChange={(e) => setSenhaNova(e.target.value)} className='form-control bordas-arredondadas'/>
                         </div>
                         <div className='form-group mt-3'>
                             <label>Confirmar a Nova Senha:</label>
-                            <input type='password' placeholder='Confirme a Senha Nova' onChange={(e) => setSenhaConfirmar(e.target.value)} className='form-control bordas-arredondadas'/>
+                            <input type='password' placeholder='Confirme a Senha Nova' required onChange={(e) => setSenhaConfirmar(e.target.value)} className='form-control bordas-arredondadas'/>
                         </div>
                     </Modal.Body>
                     <Modal.Footer>
                         <div className='d-flex row w-100 gx-2 gy-2'>
-                            <div className='col-sm-6'><button className='btn w-100 btn-secondary bordas-arredondadas' type='button' data-dismiss='modal'><i className='fa fa-chevron-left' aria-hidden='true'></i> Voltar</button></div>
+                            <div className='col-sm-6'><button className='btn w-100 btn-secondary bordas-arredondadas' type='button' onClick={fecharModalSenha}><i className='fa fa-chevron-left' aria-hidden='true'></i> Voltar</button></div>
                             <div className='col-sm-6'><button className='btn w-100 btn-primary bordas-arredondadas' type='submit'><i className='fa fa-check' aria-hidden='true'></i> Confirmar</button></div>
                         </div>
                     </Modal.Footer>
@@ -374,28 +397,28 @@ function Perfil(){
                     <h4 className='modal-title mx-auto'>Alteração de E-mail</h4>
                 </Modal.Header>
 
-                <form action="">
+                <form method='POST' onSubmit={AlterarEmail}>
                     <Modal.Body>
                         <p className='text-center'>Para prosseguir com a alteração do seu e-mail, preencha os campos abaixo:</p>
 
-                        <div className='form-group'>
-                            <label>Seu E-mail Atual:</label>
-                            <input type='email' placeholder='Informe seu E-mail atual' className='form-control bordas-arredondadas'/>
-                        </div>
                         <div className='form-group mt-3'>
-                            <label>Novo E-mail:</label>
-                            <input type='email' placeholder='Informe o Novo E-mail' className='form-control bordas-arredondadas'/>
+                            <label>Novo e-mail:</label>
+                            <input type='email' placeholder='Informe o novo e-mail' required onChange={(e) => setNovoEmail(e.target.value)} className='form-control bordas-arredondadas'/>
                         </div>
+                        <div className='form-group'>
+                            <label>Confirme o e-mail:</label>
+                            <input type='email' placeholder='Confirme o novo e-mail' required onChange={(e) => setConfirmeEmail(e.target.value)} className='form-control bordas-arredondadas'/>
+                        </div>                        
                         <div className="dropdown-divider mt-4"></div>
                         <div className='form-group mt-3'>
                             <label>Confirmar Sua Senha:</label>
-                            <input type='password' placeholder='Confirme a sua Senha' className='form-control bordas-arredondadas'/>
+                            <input type='password' placeholder='Confirme a sua Senha' required onChange={(e) => setSenhaAlteraEmail(e.target.value)} className='form-control bordas-arredondadas'/>
                         </div>
                     </Modal.Body>
                     <Modal.Footer>
                         <div className='d-flex row w-100 gx-2 gy-2'>
-                            <div className='col-sm-6'><button className='btn w-100 btn-secondary bordas-arredondadas' data-dismiss='modal'><i className='fa fa-chevron-left' aria-hidden='true'></i> Voltar</button></div>
-                            <div className='col-sm-6'><button className='btn w-100 btn-primary bordas-arredondadas'><i className='fa fa-check' aria-hidden='true'></i> Confirmar</button></div>
+                            <div className='col-sm-6'><button className='btn w-100 btn-secondary bordas-arredondadas' type='button' onClick={fecharModalEmail}><i className='fa fa-chevron-left' aria-hidden='true'></i> Voltar</button></div>
+                            <div className='col-sm-6'><button className='btn w-100 btn-primary bordas-arredondadas' type='submit'><i className='fa fa-check' aria-hidden='true'></i> Confirmar</button></div>
                         </div>
                     </Modal.Footer>
                 </form>

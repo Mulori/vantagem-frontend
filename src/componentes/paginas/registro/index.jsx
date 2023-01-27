@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import React from 'react';
 import { Link, useNavigate, Navigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
@@ -20,7 +20,10 @@ function Registro() {
     const [tipoCadastro, setTipoCadastro] = useState(1);
     const [documento, setDocumento] = useState("");
 
-    //Se o usuário estiver autenticado redireciona para o painel
+    useEffect(() => {
+        document.title = "VANTAGEM | Cadastre-se"
+    }, [])   
+
     if (ValidaAutenticacao()) {
         return (
             <Navigate to="/" replace={true} />

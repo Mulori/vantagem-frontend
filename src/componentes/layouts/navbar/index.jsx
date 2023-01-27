@@ -1,4 +1,4 @@
-import { useLocation, useNavigate, Link } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import $ from 'jquery';
 
 import './styles.css'
@@ -7,19 +7,9 @@ function Navbar() {
 
     var Navegacao = useNavigate();
 
-    function updateMenu() {
-        if (document.getElementById('responsive-menu').checked == true) {
-          document.getElementById('menu').style.borderBottomRightRadius = '0';
-          document.getElementById('menu').style.borderBottomLeftRadius = '0';
-        }else{
-          document.getElementById('menu').style.borderRadius = '10px';
-        }
-    }
-
     $(document).ready(function() {
         function resetarSeletor() {
             var tabsNewAnim = $('#navbarSupportedContent');
-            var selectorNewAnim = $('#navbarSupportedContent').find('li').length;
             var activeItemNewAnim = tabsNewAnim.find('.active');
             var activeWidthNewAnimHeight = activeItemNewAnim.innerHeight();
             var activeWidthNewAnimWidth = activeItemNewAnim.innerWidth();
@@ -73,7 +63,7 @@ function Navbar() {
         return (
 
             <nav className='navbar navbar-expand-lg navbar-light m-2 navbar-mainbg'>
-                <a class='navbar-brand navbar-logo' href='#'>Olá, {localStorage.getItem('nome_usuario_vantagem')}!</a>
+                <a class='navbar-brand navbar-logo'>Olá, {localStorage.getItem('nome_usuario_vantagem')}!</a>
                 <button className='navbar-toggler' type='button' data-bs-toggle='collapse' data-bs-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation'>
                     <i class='fa fa-bars text-white'></i>
                 </button>
@@ -84,22 +74,22 @@ function Navbar() {
                             <div class='right'></div>
                         </div>
                         <li className='nav-item active px-2'>
-                            <a className='nav-link' href='javascript:void(0);'><i class='fa fa-tachometer'></i> Início</a>
+                            <a className='nav-link'><i class='fa fa-tachometer'></i> Início</a>
                         </li>
                         <li className='nav-item px-2'>
-                            <a className='nav-link' href='javascript:void(0);'><i class='fa fa-users'></i> Alunos</a>
+                            <a className='nav-link' ><i class='fa fa-users'></i> Alunos</a>
                         </li>
                         <li className='nav-item px-2'>
-                            <a className='nav-link' href='javascript:void(0);'><i class='fa fa-graduation-cap'></i> Escolas</a>
+                            <a className='nav-link' ><i class='fa fa-graduation-cap'></i> Escolas</a>
                         </li>
                         <li className='nav-item px-2'>
-                            <a className='nav-link' href='javascript:void(0);'><i class='fa fa-map-marker'></i> Rotas</a>
+                            <a className='nav-link' ><i class='fa fa-map-marker'></i> Rotas</a>
                         </li>
                         <li className='nav-item px-2'>
-                            <a className='nav-link' href='javascript:void(0);'><i class='fa fa-usd' aria-hidden='true'></i> Mensalidades</a>
+                            <a className='nav-link'><i class='fa fa-usd' aria-hidden='true'></i> Mensalidades</a>
                         </li>
                         <li className='nav-item px-2' id='navbar-perfil'>
-                            <a href='javascript:void(0);' onClick={() => Navegacao('/perfil')}><i class='fa fa-user'></i> Meu Perfil</a>
+                            <a  onClick={() => Navegacao('/perfil')}><i class='fa fa-user'></i> Meu Perfil</a>
                         </li>
                     </ul>
                 </div>
