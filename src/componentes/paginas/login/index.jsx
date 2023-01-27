@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, Navigate } from 'react-router-dom';
 import ValidaAutenticacao from '../../funcoes/autenticacao';
 import api from '../../../controller/api';
@@ -8,15 +8,16 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import './styles.css';
 
-import background_image from '../../../images/background-van-2.jpg';
-
 function Login() {
     const Navegacao = useNavigate();
 
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
 
-    //Se o usuário estiver autenticado redireciona para o painel
+    useEffect(() => {
+        document.title = "VANTAGEM | Login"
+    }, [])    
+    
     if (ValidaAutenticacao()) {
         return (
             <Navigate to="/" replace={true} />
@@ -45,8 +46,6 @@ function Login() {
             return;
         });
     }
-
-    document.body.style = "";
 
     const notificarErro = (e) => toast.error(e, {
         position: "top-center",

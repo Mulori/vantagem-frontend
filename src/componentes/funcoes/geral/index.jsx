@@ -28,5 +28,13 @@ function formatarCPFCNPJ(v) {
     return v;
 }
 
-export { removerMascara, formataStringData, formatarCPFCNPJ };
+function formataDataHora(dataHora) {
+    var datetime = new Date(dataHora).toLocaleString("pt-BR", {
+      timeZone: "America/Sao_Paulo",
+    });
+    return datetime;
+}
+
+
+export { removerMascara, formataStringData, formatarCPFCNPJ, formataDataHora };
 
