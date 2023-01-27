@@ -28,13 +28,13 @@ function Perfil(){
     const [sobreMim, setSobreMim] = useState('');
     const [tipoCadastro, setTipoCadastro] = useState('');
     const [modalSenha, setModalSenha] = useState(false);
-    const [modalImagem, setModalImagem] = useState(false);
+    const [modalEmail, setModalEmail] = useState(false);
 
     const abrirModalSenha = () => setModalSenha(true);
     const fecharModalSenha = () => setModalSenha(false);
 
-    const abrirModalImagem = () => setModalImagem(true);
-    const fecharModalImagem = () => setModalImagem(false);
+    const abrirModalEmail = () => setModalEmail(true);
+    const fecharModalEmail = () => setModalEmail(false);
 
     function Desconectar(){
         localStorage.clear();
@@ -43,30 +43,7 @@ function Perfil(){
 
     useEffect(() => {
         BaixarCadastro();
-    }, [])
-
-    async function receberArquivoImagem(event) {
-        const file = event.target.files[0];
-
-        const clientId = "0d51bfe4294b23a",
-        auth = "Client-ID " + clientId;
-
-        const formData = new FormData();
-        formData.append("file", file);
-
-        apiImgur.post('/image', formData,
-            {
-                headers: {
-                    Authorization: auth,
-                    Accept: "application/json",
-                }
-            }
-        ).then((res) => {
-            console.log(res);
-        }).catch((err) => {
-            console.log(err); 
-        })
-    }
+    }, []);
 
     function BaixarCadastro(){
         const codigo_usuario = localStorage.getItem('codigo_usuario_vantagem');
@@ -117,6 +94,15 @@ function Perfil(){
     var caminho_atual = useLocation();
 
     $(document).ready(function() {
+
+        if ($(window).width() <= 900) {
+            $('#card-right').addClass('mt-10');
+            $('#card-dados').addClass('text-center');
+        } else {
+            $('#card-right').removeClass('mt-10');
+            $('#card-dados').removeClass('text-center');
+        }
+
         $(window).resize(function() {
             if ($(window).width() <= 900) {
                 $('#card-right').addClass('mt-10');
@@ -180,7 +166,7 @@ function Perfil(){
                                                     <span className='lbUltimaAlteracao'>Membro desde: {membroDesde}</span>    
                                                 </div>                                                    
                                                 <div className='col'>   
-                                                    <button type='button' class='btn btn-primary bordas-arredondadas mt-2' onClick={abrirModalImagem}><i class='fa fa-fw fa-camera'></i> Alterar Imagem de Perfil</button>                                        
+                                                    <button type='button' class='btn btn-primary bordas-arredondadas mt-2'><i class='fa fa-fw fa-camera'></i> Alterar Imagem de Perfil</button>                                        
                                                 </div>                                                                                                
                                             </div>
                                         </div>                                            
@@ -192,15 +178,15 @@ function Perfil(){
                                                     <span className='display-4' style={{fontSize: '25px'}}><strong>Informações Pessoais</strong></span>
                                                     <div className='form-row mt-3 d-flex flex-column flex-sm-row '>
                                                         <div className='form-group mx-1 col'>
-                                                            <label>Nome</label>
+                                                            <label>Nome:</label>
                                                             <input className='form-control bordas-arredondadas' maxLength={100} required value={nome} onChange={(e) => setNome(e.target.value)} placeholder='Nome' />
                                                         </div>
                                                         <div className='form-group mx-1 col'>
-                                                            <label>Sobrenome</label>
+                                                            <label>Sobrenome:</label>
                                                             <input className='form-control bordas-arredondadas' maxLength={100} required value={sobrenome} onChange={(e) => setSobrenome(e.target.value)} placeholder='Sobrenome' />
                                                         </div>
                                                         <div className='form-group mx-1 col'>
-                                                            <label>E-mail</label>
+                                                            <label>E-mail:</label>
                                                             <input className='form-control bordas-arredondadas' maxLength={255} readOnly required value={email} onChange={(e) => setEmail(e.target.value)} placeholder='E-mail' />
                                                         </div>                                                          
                                                     </div>
@@ -211,7 +197,7 @@ function Perfil(){
                                                         </div>
                                                         { tipoCadastro === '2' ?
                                                         <div className='form-group mx-1 col'>
-                                                            <label>CNH</label>
+                                                            <label>CNH:</label>
                                                             <input className='form-control bordas-arredondadas' maxLength={15} readOnly value={cnh} onChange={(e) => setCnh(e.target.value)} placeholder='Seu Registro da CNH' />
                                                         </div>
                                                         : null }
@@ -222,11 +208,14 @@ function Perfil(){
                                                         <div className='form-group mx-1 col'>
                                                             <label>Data de Nascimento</label>
                                                             <InputMask className='form-control bordas-arredondadas' required mask="99/99/9999" placeholder='00/00/0000' value={dataNascimento} onChange={(e) => setDataNascimento(e.target.value)}></InputMask>
-                                                        </div>                                                           
-                                                    </div>
+                                                        </div>
+                                                        <div className='form-group mx-1 col'>
+                                                            <label>Data de Nascimento:</label>
+                                                            <input className='form-control bordas-arredondadas' maxLength={12} value={celular} onChange={(e) => setCelular(e.target.value)} placeholder='Sua Data de Nascimento' />          </div>                                                           
+                                                        </div>
                                                     <div className='form-row mt-3 d-flex flex-column flex-sm-row'>
                                                         <div className='form-group mx-1 col'>
-                                                            <label>Sobre Mim</label>
+                                                            <label>Sobre Mim:</label>
                                                             <textarea className='form-control bordas-arredondadas' maxLength={500} rows='5' value={sobreMim} onChange={(e) => setSobreMim(e.target.value)} placeholder='Olá, me chamo...' />
                                                         </div>                                                         
                                                     </div>
@@ -247,7 +236,7 @@ function Perfil(){
                                                     <span className='display-4' style={{fontSize: '25px'}}><strong>Informações Financeiras</strong></span>
                                                     <div className='form-row mt-3 d-flex flex-column flex-sm-row '>
                                                         <div className='form-group mx-1 col'>
-                                                            <label>Tipo Chave Pix</label>
+                                                            <label>Tipo Chave Pix:</label>
                                                             <select className='form-control w-100 bordas-arredondadas'>
                                                                 <option value='1'>CPF ou CNPJ</option>
                                                                 <option value='2'>E-mail</option>
@@ -256,7 +245,7 @@ function Perfil(){
                                                             </select>
                                                         </div>
                                                         <div className='form-group mx-1 col'>
-                                                            <label>Chave Pix (Recebimentos)</label>
+                                                            <label>Chave Pix (Recebimentos):</label>
                                                             <input className='form-control bordas-arredondadas' readOnly />
                                                         </div>                                                        
                                                     </div>
@@ -292,7 +281,7 @@ function Perfil(){
                                                 <h5 className='form-label'>Alterar Meu E-mail</h5>
                                             </div>
                                             <div className='row'>
-                                                <button className='btn btn-primary btn-form bordas-arredondadas'><i className='fa fa-envelope' aria-hidden='true'></i> Alterar</button> 
+                                                <button className='btn btn-primary btn-form bordas-arredondadas' onClick={abrirModalEmail}><i className='fa fa-envelope' aria-hidden='true'></i> Alterar</button> 
                                             </div>                                                                                           
                                         </Card.Body>
                                     </Card>                                  
@@ -331,48 +320,64 @@ function Perfil(){
                     </div>
                     <h4 className='modal-title mx-auto'>Redefinição de Senha</h4>
                 </Modal.Header>
-                <Modal.Body>
-                    <p className='text-center'>Para prosseguir com a recuperação da senha da sua conta, precisamos ter
-                        certeza que você é realmente o dono da dela.</p>
-
-                    <div className='form-group'>
-                        <input type='email' placeholder='Informe o E-mail de Cadastro' className='form-control bordas-arredondadas mt-4'/>
-                    </div>
-                </Modal.Body>
-                <Modal.Footer>
-                    <div className='d-flex row w-100 gx-2 gy-2'>
-                        <div className='col-sm-6'><button className='btn w-100 btn-secondary bordas-arredondadas' data-dismiss='modal'><i className='fa fa-chevron-left' aria-hidden='true'></i> Voltar</button></div>
-                        <div className='col-sm-6'><button className='btn w-100 btn-primary bordas-arredondadas'><i className='fa fa-location-arrow' aria-hidden='true'></i> Enviar Solicitação</button></div>
-                    </div>
-                </Modal.Footer>
+                <form action="">
+                    <Modal.Body>
+                        <p className='text-center'>Para prosseguir com a alteração da sua senha, preencha os campos abaixo:</p>
+                        <div className='form-group'>
+                            <label>Senha Atual:</label>
+                            <input type='password' placeholder='Informe sua Senha Atual' className='form-control bordas-arredondadas'/>
+                        </div>
+                        <div className='form-group mt-3'>
+                            <label>Nova Senha:</label>
+                            <input type='password' placeholder='Informe a Senha Nova' className='form-control bordas-arredondadas'/>
+                        </div>
+                        <div className='form-group mt-3'>
+                            <label>Confirmar a Nova Senha:</label>
+                            <input type='password' placeholder='Confirme a Senha Nova' className='form-control bordas-arredondadas'/>
+                        </div>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <div className='d-flex row w-100 gx-2 gy-2'>
+                            <div className='col-sm-6'><button className='btn w-100 btn-secondary bordas-arredondadas' data-dismiss='modal'><i className='fa fa-chevron-left' aria-hidden='true'></i> Voltar</button></div>
+                            <div className='col-sm-6'><button className='btn w-100 btn-primary bordas-arredondadas' type='submit'><i className='fa fa-check' aria-hidden='true'></i> Confirmar</button></div>
+                        </div>
+                    </Modal.Footer>
+                </form>
             </Modal>
 
-            <Modal className='modal-customizado' id='modal-ajustar-imagem-perfil' show={modalImagem} animation={true} onHide={fecharModalImagem}>
+            <Modal className='modal-customizado' show={modalEmail} animation={true} onHide={fecharModalEmail}>
                 <Modal.Header>
-                    <div class='icon-box'>
-                        <i class='fa fa-scissors mx-auto'></i>
+                    <div className='icon-box'>
+                        <i className='fa fa-envelope mx-auto'></i>
                     </div>
-                    <h4 class='modal-title mx-auto'>Ajuste da Imagem</h4>
+                    <h4 className='modal-title mx-auto'>Alteração de E-mail</h4>
                 </Modal.Header>
-                <Modal.Body>
-                    <div class='img-container text-center'>
-                        <div class='row'>
 
+                <form action="">
+                    <Modal.Body>
+                        <p className='text-center'>Para prosseguir com a alteração do seu e-mail, preencha os campos abaixo:</p>
+
+                        <div className='form-group'>
+                            <label>Seu E-mail Atual:</label>
+                            <input type='email' placeholder='Informe seu E-mail atual' className='form-control bordas-arredondadas'/>
                         </div>
-                    </div>
-                </Modal.Body>
-                <Modal.Footer>
-                    <div className='d-flex row w-100 gx-2 gy-2'>
-                        <div className='col'><button className='btn w-100 btn-secondary bordas-arredondadas' data-dismiss='modal'><i className='fa fa-chevron-left' aria-hidden='true'></i> Voltar</button></div>
-                        <div className='col'>
-                            <label for='inputImagemPerfil' class='btn w-100 btn-primary bordas-arredondadas'><i class='fa fa-fw fa-camera'></i> Alterar Foto de Perfil</label>
-                            <input type='file' id='inputImagemPerfil' onChange={e => receberArquivoImagem(e)} style={{'visibility':'hidden'}}/>
+                        <div className='form-group mt-3'>
+                            <label>Novo E-mail:</label>
+                            <input type='email' placeholder='Informe o Novo E-mail' className='form-control bordas-arredondadas'/>
                         </div>
-                    </div>
-                    <div className="d-flex row w-100 gx-2">
-                        <div className='col-12'><button className='btn w-100 btn-primary bordas-arredondadas'><i className='fa fa-location-arrow' aria-hidden='true'></i> Enviar Solicitação</button></div>
-                    </div>
-                </Modal.Footer>
+                        <div className="dropdown-divider mt-4"></div>
+                        <div className='form-group mt-3'>
+                            <label>Confirmar Sua Senha:</label>
+                            <input type='password' placeholder='Confirme a sua Senha' className='form-control bordas-arredondadas'/>
+                        </div>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <div className='d-flex row w-100 gx-2 gy-2'>
+                            <div className='col-sm-6'><button className='btn w-100 btn-secondary bordas-arredondadas' data-dismiss='modal'><i className='fa fa-chevron-left' aria-hidden='true'></i> Voltar</button></div>
+                            <div className='col-sm-6'><button className='btn w-100 btn-primary bordas-arredondadas'><i className='fa fa-check' aria-hidden='true'></i> Confirmar</button></div>
+                        </div>
+                    </Modal.Footer>
+                </form>
             </Modal>
 
             <ToastContainer />
