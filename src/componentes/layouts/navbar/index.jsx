@@ -1,4 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom'
+import { useState } from 'react';
 import $ from 'jquery';
 
 import './styles.css'
@@ -6,6 +7,8 @@ import './styles.css'
 function Navbar() {
 
     var Navegacao = useNavigate();
+
+    const [tipoCadastro, setTipoCadastro] = useState(null);
 
     $(document).ready(function() {
         function resetarSeletor() {
@@ -85,11 +88,16 @@ function Navbar() {
                         <li className='nav-item px-2'>
                             <a className='nav-link' ><i class='fa fa-map-marker'></i> Rotas</a>
                         </li>
+                        {!tipoCadastro ? null : tipoCadastro == 1 ? null :
+                        <li className='nav-item px-2' id='navbar-veiculos'>
+                            <a onClick={() => Navegacao('/veiculos')} className='nav-link' ><i class='fa fa-bus'></i> Veículos</a>
+                        </li>
+                        }
                         <li className='nav-item px-2'>
                             <a className='nav-link'><i class='fa fa-usd' aria-hidden='true'></i> Mensalidades</a>
                         </li>
                         <li className='nav-item px-2' id='navbar-perfil'>
-                            <a  onClick={() => Navegacao('/perfil')}><i class='fa fa-user'></i> Meu Perfil</a>
+                            <a onClick={() => Navegacao('/perfil')} className='nav-link'><i class='fa fa-user'></i> Meu Perfil</a>
                         </li>
                     </ul>
                 </div>

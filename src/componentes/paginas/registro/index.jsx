@@ -59,7 +59,7 @@ function Registro() {
             localStorage.setItem("sobrenome_usuario_vantagem", res.data.sobrenome);
             localStorage.setItem("tipo_cadastro_usuario_vantagem", res.data.tipo_cadastro);
             localStorage.setItem("token_usuario_vantagem", res.data.token);
-            Navegacao("/")
+            Navegacao("/");
         })
         .catch((err) => {
             notificarErro(err.response.data);
