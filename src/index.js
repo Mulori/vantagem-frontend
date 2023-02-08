@@ -1,10 +1,6 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import Rotas from './componentes/rotas';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import Rotas from "./componentes/rotas";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <Rotas />
-  </React.StrictMode>
-);
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<Rotas />);

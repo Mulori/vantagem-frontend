@@ -63,30 +63,30 @@ function Navbar() {
         return (
 
             <nav className='navbar navbar-expand-lg navbar-light m-2 navbar-mainbg'>
-                <a class='navbar-brand navbar-logo'>Olá, {localStorage.getItem('nome_usuario_vantagem')}!</a>
+                <a className='navbar-brand navbar-logo'>Olá, {localStorage.getItem('nome_usuario_vantagem')}!</a>
                 <button className='navbar-toggler' type='button' data-bs-toggle='collapse' data-bs-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation'>
-                    <i class='fa fa-bars text-white'></i>
+                    <i className='fa fa-bars text-white'></i>
                 </button>
                 <div className='collapse navbar-collapse' id='navbarSupportedContent'>
                     <ul className='navbar-nav mx-auto'>
-                        <div class='hori-selector'>
-                            <div class='left'></div>
-                            <div class='right'></div>
+                        <div className='hori-selector'>
+                            <div className='left'></div>
+                            <div className='right'></div>
                         </div>
                         <li className='nav-item active px-2'>
-                            <a className='nav-link'><i class='fa fa-tachometer'></i> Início</a>
+                            <a className='nav-link'><i className='fa fa-tachometer'></i> Início</a>
                         </li>
                         <li className='nav-item px-2'>
-                            <a className='nav-link' ><i class='fa fa-users'></i> Alunos</a>
+                            <a className='nav-link' ><i className='fa fa-users'></i> Alunos</a>
                         </li>
                         <li className='nav-item px-2'>
-                            <a className='nav-link' ><i class='fa fa-graduation-cap'></i> Escolas</a>
+                            <a className='nav-link' ><i className='fa fa-graduation-cap'></i> Escolas</a>
                         </li>
                         <li className='nav-item px-2'>
-                            <a className='nav-link' ><i class='fa fa-map-marker'></i> Rotas</a>
+                            <a className='nav-link' ><i className='fa fa-map-marker'></i> Rotas</a>
                         </li>
                         <li className='nav-item px-2'>
-                            <a className='nav-link'><i class='fa fa-usd' aria-hidden='true'></i> Mensalidades</a>
+                            <a className='nav-link'><i className='fa fa-usd' aria-hidden='true'></i> Mensalidades</a>
                         </li>
                         <li className='nav-item px-2' id='navbar-perfil'>
                             <a  onClick={() => Navegacao('/perfil')}><i class='fa fa-user'></i> Meu Perfil</a>

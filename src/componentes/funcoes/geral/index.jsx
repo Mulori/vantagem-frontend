@@ -29,10 +29,13 @@ function formatarCPFCNPJ(v) {
 }
 
 function formataDataHora(dataHora) {
-    var datetime = new Date(dataHora).toLocaleString("pt-BR", {
-      timeZone: "America/Sao_Paulo",
-    });
-    return datetime;
+      
+    var obj = dataHora.toString().substring(0, 10);
+    var obj_year = obj.split("-")[0];
+    var obj_mouth = obj.split("-")[1];
+    var obj_day = obj.split("-")[2];
+
+    return obj_day + '/' + obj_mouth + '/' + obj_year;
 }
 
 
