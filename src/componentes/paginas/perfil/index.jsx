@@ -21,10 +21,10 @@ function Perfil(){
     const [email, setEmail] = useState('');
     const [documento, setDocumento] = useState('');
     const [dataNascimento, setDataNascimento] = useState('');
-    const [cnh, setCnh] = useState('');
+    const [cnh, setCnh] = useState(null);
     const [celular, setCelular] = useState('');
     const [sobreMim, setSobreMim] = useState('');
-    const [tipoCadastro, setTipoCadastro] = useState('');
+    const [tipoCadastro, setTipoCadastro] = useState();
     const [modalSenha, setModalSenha] = useState(false);
     const [modalEmail, setModalEmail] = useState(false);
     const [senhaAntiga, setSenhaAntiga] = useState('');
@@ -33,6 +33,8 @@ function Perfil(){
     const [novoEmail, setNovoEmail] = useState('');
     const [confirmeEmail, setConfirmeEmail] = useState('');
     const [senhaAlteraEmail, setSenhaAlteraEmail] = useState('');
+    const [usuarioFinanceiroTipoChave, setUsuarioFinanceiroTipoChave] = useState(1);
+    const [usuarioFinanceiroChave, setUsuarioFinanceiroChave] = useState(null);
 
     const abrirModalSenha = () => setModalSenha(true);
     const fecharModalSenha = () => setModalSenha(false);
@@ -56,6 +58,7 @@ function Perfil(){
         api.get('/api/v1/usuarios/' + codigo_usuario, { headers: { Authorization: localStorage.getItem('token_usuario_vantagem') } } )
         .then((res) => {
             var cadastrado = new Date(res.data.cadastrado);
+            var nascimento = new Date(res.data.data_nascimento);
 
             setNomeCompleto(res.data.nome + ' ' + res.data.sobrenome);
             setMembroDesde(new Intl.DateTimeFormat('pt-BR', { day: 'numeric', month: 'short', year: 'numeric'} ).format(cadastrado));
@@ -63,11 +66,20 @@ function Perfil(){
             setSobrenome(res.data.sobrenome);
             setEmail(res.data.email);
             setDocumento(res.data.documento);
-            setDataNascimento(formataDataHora(res.data.data_nascimento.replace("00:00:00", "10:50:00")));
+
+            if(res.data.data_nascimento){
+                setDataNascimento(formataDataHora(res.data.data_nascimento));
+            }
+            
             setCnh(res.data.cnh);
             setCelular(res.data.celular);
             setSobreMim(res.data.sobre_mim);
             setTipoCadastro(res.data.tipo_cadastro);
+            
+            if(res.data.usuario_financeiro.length > 0){
+                setUsuarioFinanceiroTipoChave(res.data.usuario_financeiro[0].tipo_chave_pix);
+                setUsuarioFinanceiroChave(res.data.usuario_financeiro[0].chave_pix);
+            }            
         })
         .catch((err) => {
             console.log(err)
@@ -89,6 +101,27 @@ function Perfil(){
         .then((ret) => {
             notificarSucesso(ret.data);
             BaixarCadastro();
+        })
+        .catch((err) => {
+            notificarErro(err.response.data);
+            return;
+        });
+    }
+
+    function SalvarInformacoesFinanceiras(e){
+        e.preventDefault();
+
+        const codigo_usuario = localStorage.getItem("codigo_usuario_vantagem");
+
+        let json = {
+            codigo_usuario: parseInt(codigo_usuario),
+            tipo_chave_pix: parseInt(usuarioFinanceiroTipoChave),
+            chave_pix: usuarioFinanceiroChave.trim()
+        }
+
+        api.post("/api/v1/usuariofinanceiro", json, { headers: {Authorization: localStorage.getItem('token_usuario_vantagem') }})
+        .then((ret) => {
+            notificarSucesso(ret.data);
         })
         .catch((err) => {
             notificarErro(err.response.data);
@@ -206,12 +239,12 @@ function Perfil(){
                                         <div className='col d-flex flex-column flex-sm-row justify-content-between mb-3'>
                                             <div className='col flex-column my-auto' id='card-dados'>
                                                 <h4>{nomeCompleto}</h4>
-                                                { tipoCadastro === 2 ? <Badge bg='secondary'>Motorista</Badge> : <Badge bg='secondary'>Aluno/Responsável</Badge> }
+                                                { !tipoCadastro ? null : tipoCadastro === 2 ? <Badge bg='secondary'>Motorista</Badge> : <Badge bg='secondary'>Aluno/Responsável</Badge> }
                                                 <div className='col'>  
                                                     <span className='lbUltimaAlteracao'>Membro desde: {membroDesde}</span>    
                                                 </div>                                                    
                                                 <div className='col'>   
-                                                    <button type='button' class='btn btn-primary bordas-arredondadas mt-2'><i class='fa fa-fw fa-camera'></i> Alterar Imagem de Perfil</button>                                        
+                                                    <button type='button' className='btn btn-primary bordas-arredondadas mt-2'><i className='fa fa-fw fa-camera'></i> Alterar Imagem de Perfil</button>                                        
                                                 </div>                                                                                                
                                             </div>
                                         </div>                                            
@@ -224,21 +257,21 @@ function Perfil(){
                                                     <div className='form-row mt-3 d-flex flex-column flex-sm-row '>
                                                         <div className='form-group mx-1 col'>
                                                             <label>Nome:</label>
-                                                            <input className='form-control bordas-arredondadas' maxLength={100} required value={nome} onChange={(e) => setNome(e.target.value)} placeholder='Nome' />
+                                                            <input className='form-control bordas-arredondadas' maxLength={100} required={true} value={nome} onChange={(e) => setNome(e.target.value)} placeholder='Nome' />
                                                         </div>
                                                         <div className='form-group mx-1 col'>
                                                             <label>Sobrenome:</label>
-                                                            <input className='form-control bordas-arredondadas' maxLength={100} required value={sobrenome} onChange={(e) => setSobrenome(e.target.value)} placeholder='Sobrenome' />
+                                                            <input className='form-control bordas-arredondadas' maxLength={100} required={true} value={sobrenome} onChange={(e) => setSobrenome(e.target.value)} placeholder='Sobrenome' />
                                                         </div>
                                                         <div className='form-group mx-1 col'>
                                                             <label>E-mail:</label>
-                                                            <input className='form-control bordas-arredondadas' maxLength={255} readOnly required value={email} onChange={(e) => setEmail(e.target.value)} placeholder='E-mail' />
+                                                            <input className='form-control bordas-arredondadas' maxLength={255} readOnly required={true} value={email} onChange={(e) => setEmail(e.target.value)} placeholder='E-mail' />
                                                         </div>                                                          
                                                     </div>
                                                     <div className='form-row mt-3 d-flex flex-column flex-sm-row'>
                                                         <div className='form-group mx-1 col'>
                                                             <label>CPF/CNPJ:</label>
-                                                            <input className='form-control bordas-arredondadas' maxLength={15} readOnly required value={formatarCPFCNPJ(documento)} onChange={(e) => setDocumento(e.target.value)} placeholder='Seu Documento (CPF/CNPJ)' />
+                                                            <input className='form-control bordas-arredondadas' maxLength={15} readOnly required={true} value={formatarCPFCNPJ(documento)} onChange={(e) => setDocumento(e.target.value)} placeholder='Seu Documento (CPF/CNPJ)' />
                                                         </div>
                                                         { tipoCadastro === 2 ?
                                                         <div className='form-group mx-1 col'>
@@ -248,11 +281,11 @@ function Perfil(){
                                                         : null }
                                                         <div className='form-group mx-1 col'>
                                                             <label>Celular</label>
-                                                            <InputMask className='form-control bordas-arredondadas' required mask="(99) 9.9999-9999" placeholder='(00) 0.0000-0000' value={celular} onChange={(e) => setCelular(e.target.value)}></InputMask>
+                                                            <InputMask className='form-control bordas-arredondadas' required={true} mask="(99) 9.9999-9999" placeholder='(00) 0.0000-0000' value={celular} onChange={(e) => setCelular(e.target.value)}></InputMask>
                                                         </div>
                                                         <div className='form-group mx-1 col'>
                                                             <label>Data de Nascimento</label>
-                                                            <InputMask className='form-control bordas-arredondadas' required mask="99/99/9999" placeholder='00/00/0000' value={dataNascimento} onChange={(e) => setDataNascimento(e.target.value)}></InputMask>
+                                                            <InputMask className='form-control bordas-arredondadas' required={true} mask="99/99/9999" placeholder='00/00/0000' value={dataNascimento} onChange={(e) => setDataNascimento(e.target.value)}></InputMask>
                                                         </div>
                                                     </div>
                                                     <div className='form-row mt-3 d-flex flex-column flex-sm-row'>
@@ -270,16 +303,16 @@ function Perfil(){
                                             </Card.Body>
                                         </Card>  
                                     </div>
-                                    { tipoCadastro === 2 ?
+                                    { !tipoCadastro ? null : tipoCadastro === 2 ?
                                     <div className='row p-1' >
                                         <Card className='card-pers h-100 w-100'>
                                             <Card.Body>
-                                                <form method='POST' onSubmit={AlterarInformacoesPessoais}>  
+                                                <form method='POST' onSubmit={SalvarInformacoesFinanceiras}>  
                                                     <span className='display-4' style={{fontSize: '25px'}}><strong>Informações Financeiras</strong></span>
                                                     <div className='form-row mt-3 d-flex flex-column flex-sm-row '>
                                                         <div className='form-group mx-1 col'>
                                                             <label>Tipo Chave Pix:</label>
-                                                            <select className='form-control w-100 bordas-arredondadas'>
+                                                            <select className='form-control w-100 bordas-arredondadas' value={usuarioFinanceiroTipoChave ? usuarioFinanceiroTipoChave : 1 } onChange={(e) => setUsuarioFinanceiroTipoChave(e.target.value)}>
                                                                 <option value='1'>CPF ou CNPJ</option>
                                                                 <option value='2'>E-mail</option>
                                                                 <option value='3'>Numero de Telefone Celular</option>
@@ -288,7 +321,7 @@ function Perfil(){
                                                         </div>
                                                         <div className='form-group mx-1 col'>
                                                             <label>Chave Pix (Recebimentos):</label>
-                                                            <input className='form-control bordas-arredondadas' readOnly />
+                                                            <input className='form-control bordas-arredondadas' value={usuarioFinanceiroChave ? usuarioFinanceiroChave : "" } maxLength={800} onChange={(e) => setUsuarioFinanceiroChave(e.target.value)} />
                                                         </div>                                                        
                                                     </div>
                                                     <div className='form-row mt-3 d-flex flex-column flex-sm-row'>
@@ -367,15 +400,15 @@ function Perfil(){
                         <p className='text-center'>Para prosseguir com a alteração da sua senha, preencha os campos abaixo:</p>
                         <div className='form-group'>
                             <label>Senha Atual:</label>
-                            <input type='password' placeholder='Informe sua Senha Atual' required onChange={(e) => setSenhaAntiga(e.target.value)} className='form-control bordas-arredondadas'/>
+                            <input type='password' placeholder='Informe sua Senha Atual' required={true} onChange={(e) => setSenhaAntiga(e.target.value)} className='form-control bordas-arredondadas'/>
                         </div>
                         <div className='form-group mt-3'>
                             <label>Nova Senha:</label>
-                            <input type='password' placeholder='Informe a Senha Nova' required onChange={(e) => setSenhaNova(e.target.value)} className='form-control bordas-arredondadas'/>
+                            <input type='password' placeholder='Informe a Senha Nova' required={true} onChange={(e) => setSenhaNova(e.target.value)} className='form-control bordas-arredondadas'/>
                         </div>
                         <div className='form-group mt-3'>
                             <label>Confirmar a Nova Senha:</label>
-                            <input type='password' placeholder='Confirme a Senha Nova' required onChange={(e) => setSenhaConfirmar(e.target.value)} className='form-control bordas-arredondadas'/>
+                            <input type='password' placeholder='Confirme a Senha Nova' required={true} onChange={(e) => setSenhaConfirmar(e.target.value)} className='form-control bordas-arredondadas'/>
                         </div>
                     </Modal.Body>
                     <Modal.Footer>
@@ -401,16 +434,16 @@ function Perfil(){
 
                         <div className='form-group mt-3'>
                             <label>Novo e-mail:</label>
-                            <input type='email' placeholder='Informe o novo e-mail' required onChange={(e) => setNovoEmail(e.target.value)} className='form-control bordas-arredondadas'/>
+                            <input type='email' placeholder='Informe o novo e-mail' required={true} onChange={(e) => setNovoEmail(e.target.value)} className='form-control bordas-arredondadas'/>
                         </div>
                         <div className='form-group'>
                             <label>Confirme o e-mail:</label>
-                            <input type='email' placeholder='Confirme o novo e-mail' required onChange={(e) => setConfirmeEmail(e.target.value)} className='form-control bordas-arredondadas'/>
+                            <input type='email' placeholder='Confirme o novo e-mail' required={true} onChange={(e) => setConfirmeEmail(e.target.value)} className='form-control bordas-arredondadas'/>
                         </div>                        
                         <div className="dropdown-divider mt-4"></div>
                         <div className='form-group mt-3'>
                             <label>Confirmar Sua Senha:</label>
-                            <input type='password' placeholder='Confirme a sua Senha' required onChange={(e) => setSenhaAlteraEmail(e.target.value)} className='form-control bordas-arredondadas'/>
+                            <input type='password' placeholder='Confirme a sua Senha' required={true} onChange={(e) => setSenhaAlteraEmail(e.target.value)} className='form-control bordas-arredondadas'/>
                         </div>
                     </Modal.Body>
                     <Modal.Footer>
