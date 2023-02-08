@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom'
-
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 import './styles.css'
 import semAvatar from '../../../images/imagem-sem-avatar.jpg'
 import { Card, Badge, Modal } from 'react-bootstrap';

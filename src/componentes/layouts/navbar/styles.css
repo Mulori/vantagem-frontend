@@ -140,6 +140,10 @@ i {
     left: -25px
 }
 
+.nav-link:hover {
+    cursor: pointer;
+}
+
 @media (max-width:991px) {
     #navbarSupportedContent ul li a {
         padding: 12px 30px
