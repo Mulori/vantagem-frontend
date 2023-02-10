@@ -44,6 +44,34 @@ a:hover {
     padding: 20px;
 }
 
+.card {
+    border-radius: 20px;
+}
+
+.mt-10 {
+    margin-top: 0.55rem !important;
+}
+
+.fix-card-footer-border-radius {
+    border-bottom-left-radius: 20px !important;
+    border-bottom-right-radius: 20px !important;
+}
+
+.fix-card-header-border-radius {
+    border-top-left-radius: 20px !important;
+    border-top-right-radius: 20px !important;
+}
+
+.rounded-circle {
+    background-color: rgba(245, 245, 245, 0.705) !important;
+}
+
+.btn-check:checked+.btn-secondary {
+    background-color: #fec63a !important;
+    border-color: #fec63a !important;
+    box-shadow: 0 0 0 0.2rem #fce6ae !important;
+}
+
 :root {
     --toastify-color-light: #fff;
     --toastify-color-info: #aaaaaa;
