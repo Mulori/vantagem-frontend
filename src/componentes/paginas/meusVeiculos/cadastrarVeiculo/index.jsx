@@ -100,7 +100,7 @@ function CadastrarVeiculo() {
                                 </div>
                                 <div className="form-group col-sm-4">
                                     <label htmlFor="txt-renavam-veiculo">Renavam do Veículo: </label>
-                                    <input type="text" id='txt-renavam-veiculo' maxLength={13} className='form-control' required={true} onChange={(e) => setRenavam(e.target.value)} />
+                                    <input type="number" min={0} max={99999999999} id='txt-renavam-veiculo' maxLength={11} className='form-control' required={true} onChange={(e) => setRenavam(e.target.value)} />
                                 </div>
                                 <div className="form-group col-sm-4">
                                     <label htmlFor="txt-lugares-veiculo">Quantidade de Lugares do Veículo: </label>
