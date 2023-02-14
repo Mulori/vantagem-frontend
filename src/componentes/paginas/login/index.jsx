@@ -2,11 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, Navigate } from 'react-router-dom';
 import ValidaAutenticacao from '../../funcoes/autenticacao';
 import api from '../../../controller/api';
-
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 import './styles.css';
+import logo from '../../../images/LOGOVANTAGEM.png';
 
 function Login() {
     const Navegacao = useNavigate();
@@ -64,8 +63,12 @@ function Login() {
             <div className="row h-100" style={{'min-height': '100vh'}}>
                 <div className="col d-flex flex-column justify-content-center bg-light">
                     <div className="container-form mx-auto w-100 p-3">
-                        <h2 className="label-inicio">Olá! Seja muito bem-vindo(a).</h2>
-                        <h4 className="font-weight-light mb-5">Autentique-se para continuar.</h4>
+                        <div className='row d-flex mb-4 g-2 text-center justify-content-center'>
+                            <img src={logo} alt='' className='logo-imagem' />
+                            <br/>
+                            <h2 className="label-inicio mt-5">Olá! Seja muito bem-vindo(a).</h2>
+                            <h4 className="font-weight-light mb-5">Autentique-se para continuar.</h4>
+                        </div>
                         <form method='POST' onSubmit={FormRealizarLogin}>
                             <div className="form-row mb-4">
                                 <div className="form-group col-12 px-2">
