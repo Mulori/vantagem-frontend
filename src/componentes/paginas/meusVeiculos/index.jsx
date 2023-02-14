@@ -77,7 +77,7 @@ function Veiculos() {
                                         </div>
                                     </Card.Body>
                                     <Card.Footer className='fix-card-footer-border-radius'>
-                                        <button className='btn btn-primary w-100' onClick={() => Navegacao("/veiculos/editar/" + item.codigo)}><i class="fa fa-bars" aria-hidden="true"></i> Ver Detalhes</button>
+                                        <button className='btn btn-primary w-100' onClick={() => Navegacao("/veiculos/detalhe/" + item.codigo)}><i class="fa fa-bars" aria-hidden="true"></i> Ver Detalhes</button>
                                     </Card.Footer>
                                 </Card>
                             </div>

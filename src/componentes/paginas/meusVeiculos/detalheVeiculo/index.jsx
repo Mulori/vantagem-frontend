@@ -6,7 +6,7 @@ import { Card } from 'react-bootstrap';
 import api from '../../../../controller/api';
 import './styles.css'
 
-function EditarVeiculo() {
+function DetalheVeiculo() {
     let { id } = useParams();
 
     useEffect(() => {
@@ -121,4 +121,4 @@ function EditarVeiculo() {
     );
 }
 
-export default EditarVeiculo;
+export default DetalheVeiculo;
