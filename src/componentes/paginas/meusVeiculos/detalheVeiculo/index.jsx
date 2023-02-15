@@ -23,6 +23,11 @@ function DetalheVeiculo() {
     const [renavam, setRenavam] = useState("");
     const [lugares, setLugares] = useState(0);
 
+    const [modalExclusao, setModalExclusao] = useState(false);
+
+    const abrirModalExclusao = () => setModalExclusao(true);
+    const fecharModalExclusao = () => setModalExclusao(false);
+
     function BaixarVeiculos() {
         const codigo_usuario = localStorage.getItem('codigo_usuario_vantagem');
 
@@ -38,6 +43,33 @@ function DetalheVeiculo() {
         .catch((err) => {
             alert(err.response.data);
         })
+    }
+
+    function SalvarAlteracoes(e){
+        e.preventDefault();
+
+        const usuario = localStorage.getItem('codigo_usuario_vantagem');
+
+        let json = {
+            codigo_usuario: parseInt(usuario),
+            codigo_motorista: parseInt(usuario),
+            veiculo_modelo: modelo.trim(),
+            veiculo_marca: marca.trim(),
+            veiculo_ano: ano.trim(),
+            veiculo_placa: placa.trim(),
+            veiculo_renavam: renavam.trim(),
+            veiculo_lugares: parseInt(lugares)
+        }
+        
+        api.put("api/v1/veiculo/" + id, json, { headers: { Authorization: localStorage.getItem('token_usuario_vantagem') } })
+        .then((res) => {
+            notificarSucesso(res.data);
+        })
+        .catch((err) => {
+            console.log(err.response.data)
+            notificarErro(err.response.data);
+            return;
+        });
     }
 
     const notificarErro = (e) => toast.error(e, {
@@ -68,7 +100,7 @@ function DetalheVeiculo() {
                 <Card.Header className='fix-card-header-border-radius'>
                     <div className='row'><span className='h1 my-auto'>Editar Veiculo</span></div>
                 </Card.Header>
-                <form >
+                <form method='POST' onSubmit={SalvarAlteracoes} >
                     <Card.Body>
                             <div className="row d-flex g-2">
                                 <div className="form-group col-sm-6">
@@ -115,6 +147,8 @@ function DetalheVeiculo() {
                     </Card.Footer>
                 </form>
             </Card>
+
+            
 
             <ToastContainer />
         </div>
