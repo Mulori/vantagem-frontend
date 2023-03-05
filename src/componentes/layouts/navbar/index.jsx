@@ -76,7 +76,7 @@ function Navbar() {
                             <a className='nav-link'><i className='fa fa-tachometer'></i> Início</a>
                         </li>
                         <li className='nav-item px-2'>
-                            <a className='nav-link' ><i className='fa fa-users'></i> Alunos</a>
+                            <a onClick={() => Navegacao('/responsaveis')} className='nav-link' ><i className='fa fa-users'></i> Responsáveis</a>
                         </li>
                         <li className='nav-item px-2'>
                             <a className='nav-link' ><i className='fa fa-graduation-cap'></i> Escolas</a>
