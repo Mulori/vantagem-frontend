@@ -18,7 +18,7 @@ function Registro() {
     const [todosEstados, setTodosEstados] = useState(null);
     const [todasCidades, setTodasCidades] = useState(null);
     const [todosBairros, setTodosBairros] = useState(null);
-
+    const [tipoPessoa, setTipoPessoa] = useState(null);
     const [tipoCadastro, setTipoCadastro] = useState(null);
 
     const [nome, setNome] = useState('');
@@ -161,6 +161,11 @@ function Registro() {
             subtitulo: 'Para começar, selecione abaixo o seu perfil:'
         },
         {
+            id: 'TIPO_PESSOA',
+            titulo: 'Precisamos saber qual o tipo de pessoa você é.',
+            subtitulo: 'Selecione abaixo o seu tipo:'
+        },
+        {
             id: 'INFORMACOES_PESSOAIS',
             titulo: 'Precisamos de algumas informações pessoais suas...',
             subtitulo: 'Não compartilharemos nenhuma de suas informações pessoais, fique tranquilo!'
@@ -195,9 +200,23 @@ function Registro() {
         paginaAnterior();
     }
 
+    function resetarTipoPessoa() {
+        setTipoPessoa(null);
+        paginaAnterior();
+    }
+
     function validarTipoPerfil() {
         if (!tipoCadastro) {
             notificarErro('Por favor, selecione o seu perfil abaixo.');
+            return;
+        } else {
+            proximaPagina();
+        }
+    }
+
+    function validarTipoPessoa() {
+        if (!tipoPessoa) {
+            notificarErro('Por favor, selecione o tipo de pessoa.');
             return;
         } else {
             proximaPagina();
@@ -291,6 +310,45 @@ function Registro() {
                                 </div>
                             )}
 
+                            {etapas[etapaAtual].id === 'TIPO_PESSOA' && (
+                                <div className='row d-flex mb-4 g-2'>
+                                    <div className='form-group col-md-6'>
+                                        <input type='radio' className='btn-check' name='options-outlined' id='btn-fisica' autoComplete='off' onChange={() => setTipoPessoa(1)}/>
+                                        <label className='btn btn-secondary text-center w-100' for='btn-fisica'>
+                                            <h4 className='my-auto'>Fisica</h4>
+
+                                            <div className='form-row mt-3 mb-3'>
+                                                <span className='p-3' style={{'font-size':'400%'}}><i class="fa fa-user" aria-hidden="true"></i></span>
+                                            </div>
+
+                                            <p className='mt-3'>Quero um perfil <strong>pessoal</strong>...</p>
+                                        </label>
+                                    </div>
+
+                                    <div className='form-group col-md-6'>
+                                        <input type='radio' className='btn-check' name='options-outlined' id='btn-juridica' autoComplete='off' onChange={() => setTipoPessoa(2)}/>
+                                        <label className='btn btn-secondary text-center w-100' for='btn-juridica'>
+                                            <h4 className='my-auto'>Juridica</h4>
+
+                                            <div className='form-row mt-3 mb-3'>
+                                                <span className='p-3' style={{'font-size':'400%'}}><i class="fa fa-briefcase" aria-hidden="true"></i></span>
+                                            </div>
+
+                                            <p className='mt-3'>Quero um perfil <strong>empresarial</strong>...</p>
+                                        </label>
+                                    </div>
+                                    
+                                    <div className='row mt-5 g-2'>
+                                        <div className='col-md px-2'>
+                                            <button type='button' className='btn btn-secondary btn-block w-100' onClick={resetarTipoCadastro}><i className='fa fa-chevron-left' aria-hidden='true'></i> Voltar</button>
+                                        </div>
+                                        <div className='col-md px-2'>
+                                            <button type='button' className='btn btn-primary btn-block w-100' onClick={validarTipoPessoa}><i className='fa fa-chevron-right' aria-hidden='true'></i> Continuar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
                             {etapas[etapaAtual].id === 'INFORMACOES_PESSOAIS' && (
                                 <div className='informacoes-pessoais'>
                                     <div className='row'>
@@ -328,9 +386,9 @@ function Registro() {
                                             <InputMask type='text' className='form-control w-100 bordas-arredondadas' id='input_telefone' required={true} mask='(99) 99999-9999' placeholder='(00) 00000-0000' onChange={(e) => setTelefone(e.target.value)} value={telefone}></InputMask>
                                         </div>
                                         <div className='col-md px-2'>
-                                            <span htmlFor='input_cpf_cnpj'>{tipoCadastro === 1 ? 'CPF' : 'CNPJ'}</span>
+                                            <span htmlFor='input_cpf_cnpj'>{tipoPessoa === 1 ? 'CPF' : 'CNPJ'}</span>
                                             {
-                                                tipoCadastro === 1 ? 
+                                                tipoPessoa === 1 ? 
                                                 <InputMask type='text' className='form-control w-100 bordas-arredondadas' required={true} mask='999.999.999-99' placeholder='000.000.000-00' id='input_cpf_cnpj' onChange={(e) => setCpfCnpj(e.target.value)} value={cpfCnpj}></InputMask>
                                                 :
                                                 <InputMask type='text' className='form-control w-100 bordas-arredondadas' required={true} mask='99.999.999/9999-99' placeholder='00.000.000/0000-00' id='input_cpf_cnpj' onChange={(e) => setCpfCnpj(e.target.value)} value={cpfCnpj}></InputMask>
@@ -344,7 +402,7 @@ function Registro() {
 
                                     <div className='row mt-5 g-2'>
                                         <div className='col-md px-2'>
-                                            <button type='button' className='btn btn-secondary btn-block w-100' onClick={resetarTipoCadastro}><i className='fa fa-chevron-left' aria-hidden='true'></i> Voltar</button>
+                                            <button type='button' className='btn btn-secondary btn-block w-100' onClick={resetarTipoPessoa}><i className='fa fa-chevron-left' aria-hidden='true'></i> Voltar</button>
                                         </div>
                                         <div className='col-md px-2'>
                                             <button type='button' className='btn btn-primary btn-block w-100' onClick={validarInformacoesPessoais}><i className='fa fa-chevron-right' aria-hidden='true'></i> Continuar</button>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Card } from 'react-bootstrap';
+import { Card, Modal } from 'react-bootstrap';
 import api from '../../../../controller/api';
 import './styles.css'
 
@@ -23,6 +23,11 @@ function DetalheVeiculo() {
     const [renavam, setRenavam] = useState("");
     const [lugares, setLugares] = useState(0);
 
+    const [modalExclusao, setModalExclusao] = useState(false);
+
+    const abrirModalExclusao = () => setModalExclusao(true);
+    const fecharModalExclusao = () => setModalExclusao(false);
+
     function BaixarVeiculos() {
         const codigo_usuario = localStorage.getItem('codigo_usuario_vantagem');
 
@@ -38,6 +43,51 @@ function DetalheVeiculo() {
         .catch((err) => {
             alert(err.response.data);
         })
+    }
+
+    function SalvarAlteracoes(e){
+        e.preventDefault();
+
+        const usuario = localStorage.getItem('codigo_usuario_vantagem');
+
+        let json = {
+            codigo_usuario: parseInt(usuario),
+            codigo_motorista: parseInt(usuario),
+            veiculo_modelo: modelo.trim(),
+            veiculo_marca: marca.trim(),
+            veiculo_ano: ano.trim(),
+            veiculo_placa: placa.trim(),
+            veiculo_renavam: renavam.trim(),
+            veiculo_lugares: parseInt(lugares)
+        }
+        
+        api.put("api/v1/veiculo/" + id, json, { headers: { Authorization: localStorage.getItem('token_usuario_vantagem') } })
+        .then((res) => {
+            notificarSucesso(res.data);
+        })
+        .catch((err) => {
+            console.log(err.response.data)
+            notificarErro(err.response.data);
+            return;
+        });
+    }
+
+    function ExcluirVeiculo(e){
+        e.preventDefault();
+
+        const usuario = localStorage.getItem('codigo_usuario_vantagem');
+
+        api.delete("api/v1/veiculo/" + id, { headers: { Authorization: localStorage.getItem('token_usuario_vantagem'), usuario: parseInt(usuario) } })
+        .then((res) => {
+            fecharModalExclusao();
+            Navegacao(-1);
+            notificarSucesso(res.data);
+        })
+        .catch((err) => {
+            console.log(err.response.data)
+            notificarErro(err.response.data);
+            return;
+        });
     }
 
     const notificarErro = (e) => toast.error(e, {
@@ -68,7 +118,7 @@ function DetalheVeiculo() {
                 <Card.Header className='fix-card-header-border-radius'>
                     <div className='row'><span className='h1 my-auto'>Editar Veiculo</span></div>
                 </Card.Header>
-                <form >
+                <form method='POST' onSubmit={SalvarAlteracoes} >
                     <Card.Body>
                             <div className="row d-flex g-2">
                                 <div className="form-group col-sm-6">
@@ -106,7 +156,7 @@ function DetalheVeiculo() {
                                 <button type='button' className='btn btn-secondary w-100' onClick={() => Navegacao(-1)}><i class="fa fa-chevron-left" aria-hidden="true"></i> Voltar</button>
                             </div>
                             <div className="form-group col-sm-3">
-                                <button type='button' className='btn btn-danger w-100'><i className="fa fa-floppy-o" aria-hidden="true"></i> Excluir</button>
+                                <button type='button' className='btn btn-danger w-100' onClick={abrirModalExclusao}><i className="fa fa-floppy-o" aria-hidden="true"></i> Excluir</button>
                             </div>
                             <div className="form-group col-sm-6">
                                 <button type='submit' className='btn btn-primary w-100'><i className="fa fa-floppy-o" aria-hidden="true"></i> Salvar</button>
@@ -115,6 +165,29 @@ function DetalheVeiculo() {
                     </Card.Footer>
                 </form>
             </Card>
+
+            <Modal className='modal-customizado' show={modalExclusao} animation={true} onHide={fecharModalExclusao}>
+                <Modal.Header>
+                    <div className='icon-box'>
+                        <i className='fa fa-envelope mx-auto'></i>
+                    </div>
+                    <h4 className='modal-title mx-auto'>Excluir Veiculo</h4>
+                </Modal.Header>
+
+                <form method='POST' onSubmit={ExcluirVeiculo}>
+                    <Modal.Body>
+                        <p className='text-center'>Para prosseguir com a exclusão do seu veiculo, confirme abaixo:</p>
+                        <p className='text-center'></p>
+                        <p className='text-center'>Deseja excluir permanentemente o veiculo {modelo}?</p>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <div className='d-flex row w-100 gx-2 gy-2'>
+                            <div className='col-sm-6'><button className='btn w-100 btn-primary bordas-arredondadas' type='submit'><i className='fa fa-check' aria-hidden='true'></i> Sim</button></div>
+                            <div className='col-sm-6'><button className='btn w-100 btn-secondary bordas-arredondadas' type='button' onClick={fecharModalExclusao}><i className='fa fa-chevron-left' aria-hidden='true'></i> Não</button></div>        
+                        </div>
+                    </Modal.Footer>
+                </form>
+            </Modal>
 
             <ToastContainer />
         </div>
