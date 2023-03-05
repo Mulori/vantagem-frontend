@@ -9,6 +9,7 @@ import ValidaAutenticacao from '../../funcoes/autenticacao';
 import ConfirmarLottie from '../../../componentes/lotties/confirmar';
 import InputMask from 'react-input-mask';
 import logo from '../../../images/LOGOVANTAGEM.png';
+import Select from 'react-select'
 
 import './styles.css';
 
@@ -37,6 +38,8 @@ function Registro() {
     const [cidade, setCidade] = useState('');
     const [pais, setPais] = useState('BR');
     const [complemento, setComplemento] = useState('');
+
+    const [jsonEstado, setJsonEstado] = useState(null);
 
     const [senha, setSenha] = useState('');
     const [confirmaSenha, setConfirmaSenha] = useState('');
@@ -138,6 +141,8 @@ function Registro() {
         setCidade(id_cidade);
         setBairro(null);
         setTodosBairros(null);
+
+        var array = [];
 
         api.get('/api/v1/cep/estado/cidade/' + id_cidade + '/bairro', { headers: { cep: 'busca-cep' } })
         .then((res) => {
@@ -436,7 +441,7 @@ function Registro() {
                                         <div className='col-md-4 px-2'>
                                             <span htmlFor='input_bairro'>Bairro:</span>
                                             <select type='text' className='form-control w-100 bordas-arredondadas' autoCapitalize='true' required id='input_bairro' onChange={(e) => setBairro(e.target.value)} value={bairro}>
-                                            {
+                                                {
                                                     !todosBairros ? null : 
                                                     todosBairros.map(item => <option value={item.id_bairro}>{item.nome}</option>)
                                                 }
