@@ -1,13 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Card } from 'react-bootstrap';
-import avatarPadrao from '../../../images/imagem-sem-avatar.jpg';
+import $ from 'jquery';
 import './styles.css';
 
-function Responsaveis() {
+function Alunos() {
     useEffect(() => {
         document.title = "VANTAGEM | Responsáveis"
     }, []);
+
+    var caminho_atual = useLocation();
+
+    $(document).ready(function() {
+        if (caminho_atual.pathname.startsWith('/alunos')) {
+            $('#navbarSupportedContent ul li').removeClass('active');
+            $('#navbar-alunos').addClass('active');
+        }
+    });
 
     var Navegacao = useNavigate();
 
@@ -16,17 +25,17 @@ function Responsaveis() {
             <Card>
                 <Card.Header className='fix-card-header-border-radius'>
                     <div className='row'>
-                        <span className='h1'>Responsáveis</span>
+                        <span className='h1'>Alunos</span>
                     </div>
                     <div className='row d-flex g-2'>
                         <div className='col-md-6'>
-                            <input type='text' className='form-control' placeholder='Nome do Responsável' />
+                            <input type='text' className='form-control' placeholder='Nome do Aluno' />
                         </div>
                         <div className='col-md-3'>
-                            <button onClick={() => Navegacao('/responsaveis/')} className='btn btn-secondary w-100'><i class='fa fa-trash' aria-hidden='true'></i> Limpar Filtro</button>
+                            <button onClick={() => Navegacao('/alunos/')} className='btn btn-secondary w-100'><i class='fa fa-trash' aria-hidden='true'></i> Limpar Filtro</button>
                         </div>
                         <div className='col-md-3'>
-                            <button onClick={() => Navegacao('/responsaveis/cadastrar')} className='btn btn-primary w-100'><i class='fa fa-plus' aria-hidden='true'></i> Cadastrar Responsável</button>
+                            <button onClick={() => Navegacao('/alunos/cadastrar')} className='btn btn-primary w-100'><i class='fa fa-plus' aria-hidden='true'></i> Cadastrar Aluno</button>
                         </div>
                     </div>
                 </Card.Header>
@@ -34,14 +43,15 @@ function Responsaveis() {
                     <div className='row d-flex g-2'>
                         <div className='col-md-4'>
                             <Card>
-                                <Card.Header className='fix-card-header-border-radius'><h3 className='my-auto'>Nome do Responsável</h3></Card.Header>
+                                <Card.Header className='fix-card-header-border-radius'><h3 className='my-auto'>Nome do Aluno</h3></Card.Header>
                                 <Card.Body>
                                     <div className='row'>
                                         <div className="col d-flex flex-column justify-content-center">
-                                            <span><strong>Endereço do Responsável: </strong><span>N/A</span></span>
-                                            <span><strong>Telefone: </strong><span>(00) 0 0000-0000</span></span>
+                                            <span><strong>Nome do Responsável: </strong><span>Responsável</span></span>
+                                            <span><strong>Telefone do Responsável: </strong><span>(00) 0 0000-0000</span></span>
                                             <div className="dropdown-divider"></div>
-                                            <span><strong>Alunos Vinculados: </strong><span>0</span></span>
+                                            <span><strong>Endereço: </strong><span>Endereço, 000 - Cidade (UF)</span></span>
+                                            <span><strong>Escola: </strong><span>EMEB Cel. Conrado Caldeira</span></span>
                                         </div>
                                     </div>
                                 </Card.Body>
@@ -57,4 +67,4 @@ function Responsaveis() {
     )
 }
 
-export default Responsaveis
+export default Alunos

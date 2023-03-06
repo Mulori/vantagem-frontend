@@ -7,6 +7,8 @@ import Perfil from "../paginas/perfil";
 import Veiculos from "../paginas/meusVeiculos";
 import CadastrarVeiculo from "../paginas/meusVeiculos/cadastrarVeiculo";
 import DetalheVeiculo from "../paginas/meusVeiculos/detalheVeiculo";
+import Alunos from "../paginas/alunos";
+import CadastrarAluno from "../paginas/alunos/cadastrarAlunos";
 
 import Navbar from "../layouts/navbar";
 
@@ -25,6 +27,8 @@ function Rotas() {
                 <Route path="/veiculos" element={<RotaPrivada> <Veiculos /> </RotaPrivada>}/>
                 <Route path="/veiculos/cadastrar" element={<RotaPrivada> <CadastrarVeiculo /> </RotaPrivada>}/>
                 <Route path="/veiculos/detalhe/:id" element={<RotaPrivada> <DetalheVeiculo /> </RotaPrivada>}/>
+                <Route path="/alunos" element={<RotaPrivada> <Alunos/> </RotaPrivada>}/>
+                <Route path="/alunos/cadastrar" element={<RotaPrivada> <CadastrarAluno/> </RotaPrivada>}/>
             </Routes>
         </BrowserRouter>
     )
