@@ -383,15 +383,15 @@ function Registro() {
                                     <div className='row'>
                                         <div className='col-md px-2'>
                                             <span htmlFor='input_telefone'>Celular:</span>
-                                            <InputMask type='text' className='form-control w-100 bordas-arredondadas' id='input_telefone' required={true} mask='(99) 99999-9999' placeholder='(00) 00000-0000' onChange={(e) => setTelefone(e.target.value)} value={telefone}></InputMask>
+                                            <InputMask type='text' className='form-control w-100 bordas-arredondadas' id='input_telefone' required={true} mask='(99) 9 9999-9999' onChange={(e) => setTelefone(e.target.value)} value={telefone}></InputMask>
                                         </div>
                                         <div className='col-md px-2'>
                                             <span htmlFor='input_cpf_cnpj'>{tipoPessoa === 1 ? 'CPF' : 'CNPJ'}</span>
                                             {
                                                 tipoPessoa === 1 ? 
-                                                <InputMask type='text' className='form-control w-100 bordas-arredondadas' required={true} mask='999.999.999-99' placeholder='000.000.000-00' id='input_cpf_cnpj' onChange={(e) => setCpfCnpj(e.target.value)} value={cpfCnpj}></InputMask>
+                                                <InputMask type='text' className='form-control w-100 bordas-arredondadas' required={true} mask='999.999.999-99' id='input_cpf_cnpj' onChange={(e) => setCpfCnpj(e.target.value)} value={cpfCnpj}></InputMask>
                                                 :
-                                                <InputMask type='text' className='form-control w-100 bordas-arredondadas' required={true} mask='99.999.999/9999-99' placeholder='00.000.000/0000-00' id='input_cpf_cnpj' onChange={(e) => setCpfCnpj(e.target.value)} value={cpfCnpj}></InputMask>
+                                                <InputMask type='text' className='form-control w-100 bordas-arredondadas' required={true} mask='99.999.999/9999-99' id='input_cpf_cnpj' onChange={(e) => setCpfCnpj(e.target.value)} value={cpfCnpj}></InputMask>
                                             }
                                         </div>
                                         <div className='col-md px-2'>
@@ -462,7 +462,7 @@ function Registro() {
                                         
                                         <div className='col-md-2 px-2'>
                                             <span htmlFor='input_cep'>CEP:</span>
-                                            <InputMask type='text' className='form-control w-100 bordas-arredondadas' maxLength={10} required={true} mask='99999-999' placeholder='00000-000' onChange={(e) => setCEP(e.target.value)} value={cep}></InputMask>
+                                            <InputMask type='text' className='form-control w-100 bordas-arredondadas' maxLength={10} required={true} mask='99999-999' onChange={(e) => setCEP(e.target.value)} value={cep}></InputMask>
                                         </div>
                                     </div>
 
