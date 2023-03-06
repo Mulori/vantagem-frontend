@@ -77,6 +77,7 @@ function Navbar() {
                         </li>
                         <li className='nav-item px-2' id='navbar-alunos'>
                             <a onClick={() => Navegacao('/alunos')} className='nav-link' ><i className='fa fa-users'></i> Alunos</a>
+                        </li>
                         <li className='nav-item px-2'>
                             <a className='nav-link' ><i className='fa fa-graduation-cap'></i> Escolas</a>
                         </li>
