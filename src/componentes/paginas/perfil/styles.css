@@ -20,8 +20,8 @@
 
 .imagem-avatar {
     border-radius: 50%;
-    height: 140px;
-    width: 140px;
+    height: 100px !important;
+    width: 100px !important;
 }
 
 .imagem-cicle {
