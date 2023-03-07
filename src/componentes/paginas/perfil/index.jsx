@@ -238,7 +238,7 @@ function Perfil(){
                                         </div>                                            
                                         <div className='col d-flex flex-column flex-sm-row justify-content-between mb-3'>
                                             <div className='col flex-column my-auto' id='card-dados'>
-                                                <h4>{nomeCompleto}</h4>
+                                                <h4>{nomeCompleto}</h4>                                                
                                                 { !tipoCadastro ? null : tipoCadastro === 2 ? <Badge bg='secondary'>Motorista</Badge> : <Badge bg='secondary'>Aluno/Responsável</Badge> }
                                                 <div className='col'>  
                                                     <span className='lbUltimaAlteracao'>Membro desde: {membroDesde}</span>    

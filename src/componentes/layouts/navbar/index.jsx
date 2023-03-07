@@ -81,8 +81,8 @@ function Navbar() {
                         <li className='nav-item px-2'>
                             <a className='nav-link' ><i className='fa fa-graduation-cap'></i> Escolas</a>
                         </li>
-                        <li className='nav-item px-2'>
-                            <a className='nav-link' ><i className='fa fa-map-marker'></i> Rotas</a>
+                        <li className='nav-item px-2' id='navbar-rotas'>
+                            <a className='nav-link' onClick={() => Navegacao('/rotas')} ><i className='fa fa-map-marker'></i> Rotas</a>
                         </li>
                         { localStorage.getItem("tipo_cadastro_usuario_vantagem") === "1" ? null :
                         <li className='nav-item px-2' id='navbar-veiculos'>
