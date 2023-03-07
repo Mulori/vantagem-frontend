@@ -19,6 +19,7 @@ function Perfil(){
     const [nome, setNome] = useState('');
     const [sobrenome, setSobrenome] = useState('');
     const [email, setEmail] = useState('');
+    const [urlAvatar, setUrlAvatar] = useState(null);
     const [documento, setDocumento] = useState('');
     const [dataNascimento, setDataNascimento] = useState('');
     const [cnh, setCnh] = useState(null);
@@ -66,6 +67,8 @@ function Perfil(){
             setSobrenome(res.data.sobrenome);
             setEmail(res.data.email);
             setDocumento(res.data.documento);
+
+            setUrlAvatar('https://vantagem-backend-r48db.ondigitalocean.app/' + res.data.url_avatar.replace("\\", "/"));
 
             if(res.data.data_nascimento){
                 setDataNascimento(formataDataHora(res.data.data_nascimento));
@@ -233,7 +236,7 @@ function Perfil(){
                                     <div className='row'>
                                         <div className='col-12 col-sm-auto mb-3 d-flex justify-content-center'>
                                             <div id='div-imagem-perfil'>
-                                                <img src={semAvatar} className='imagem-avatar imagem-cicle imagem-thumbnail mx-auto'/>
+                                                <img src={urlAvatar ? urlAvatar : semAvatar} className='imagem-avatar imagem-cicle imagem-thumbnail mx-auto'/>
                                             </div>
                                         </div>                                            
                                         <div className='col d-flex flex-column flex-sm-row justify-content-between mb-3'>
