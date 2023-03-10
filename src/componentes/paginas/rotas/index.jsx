@@ -21,7 +21,7 @@ function Rotas() {
         e.preventDefault();
 
         let formData = new FormData();
-            formData.append('avatar', e.target[0].files[0]);
+            formData.append('upload', e.target[0].files[0]);
             console.log(formData);
             api.post("/api/v1/upload/avatar/" + localStorage.getItem("codigo_usuario_vantagem"), formData, { headers: { Authorization: localStorage.getItem('token_usuario_vantagem') } })
             .then(res => {
@@ -42,25 +42,7 @@ function Rotas() {
                     </div>
                 </Card.Header>
                 <Card.Body>
-                    <div className='row d-flex g-2'>
-                        <div className='col-sm-4'>
-                            <Card>
-                                <Card.Header className='fix-card-header-border-radius'>
-                                </Card.Header>
-                                <Card.Body>
-                                    <div className='row'>
-                                        <form id="form" onSubmit={onSubmit} enctype="multipart/form-data">
-                                            <input type="file" name="avatar" />
-                                            <br/>
-                                            <button type="submit" name="upload">Fazer Upload</button>
-                                        </form>
-                                    </div>
-                                </Card.Body>
-                                <Card.Footer className='fix-card-footer-border-radius'>
-                                </Card.Footer>
-                            </Card>
-                        </div>
-                    </div>
+                    
                 </Card.Body>
             </Card>
 

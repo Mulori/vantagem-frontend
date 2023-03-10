@@ -28,6 +28,7 @@ function Perfil(){
     const [tipoCadastro, setTipoCadastro] = useState();
     const [modalSenha, setModalSenha] = useState(false);
     const [modalEmail, setModalEmail] = useState(false);
+    const [modalAvatar, setModalAvatar] = useState(false);
     const [senhaAntiga, setSenhaAntiga] = useState('');
     const [senhaNova, setSenhaNova] = useState('');
     const [senhaNovaConfirmar, setSenhaConfirmar] = useState('');
@@ -42,6 +43,9 @@ function Perfil(){
 
     const abrirModalEmail = () => setModalEmail(true);
     const fecharModalEmail = () => setModalEmail(false);
+
+    const abrirModalAvatar = () => setModalAvatar(true);
+    const fecharModalAvatar = () => setModalAvatar(false);
 
     function Desconectar(){
         localStorage.clear();
@@ -68,7 +72,7 @@ function Perfil(){
             setEmail(res.data.email);
             setDocumento(res.data.documento);
 
-            setUrlAvatar('https://vantagem-backend-r48db.ondigitalocean.app/' + res.data.url_avatar.replace("\\", "/"));
+            setUrlAvatar(res.data.url_avatar);
 
             if(res.data.data_nascimento){
                 setDataNascimento(formataDataHora(res.data.data_nascimento));
@@ -87,6 +91,24 @@ function Perfil(){
         .catch((err) => {
             console.log(err)
         })
+    }
+
+    function AlterarImagemPerfil(e){
+        e.preventDefault();
+
+        let formData = new FormData();
+            formData.append('upload', e.target[0].files[0]);
+            console.log(formData);
+            api.post("/api/v1/upload/avatar/" + localStorage.getItem("codigo_usuario_vantagem"), formData, { headers: { Authorization: localStorage.getItem('token_usuario_vantagem') } })
+            .then(res => {
+                fecharModalAvatar();
+                BaixarCadastro();
+                notificarSucesso('Imagem alterada com sucesso');
+            })
+            .catch(err => {
+                console.log(err);
+                notificarErro(err.response.data);
+            });            
     }
 
     function AlterarInformacoesPessoais(e){
@@ -247,7 +269,7 @@ function Perfil(){
                                                     <span className='lbUltimaAlteracao'>Membro desde: {membroDesde}</span>    
                                                 </div>                                                    
                                                 <div className='col'>   
-                                                    <button type='button' className='btn btn-primary bordas-arredondadas mt-2'><i className='fa fa-fw fa-camera'></i> Alterar Imagem de Perfil</button>                                        
+                                                    <button type='button' onClick={abrirModalAvatar} className='btn btn-primary bordas-arredondadas mt-2'><i className='fa fa-fw fa-camera'></i> Alterar Imagem de Perfil</button>                                        
                                                 </div>                                                                                                
                                             </div>
                                         </div>                                            
@@ -453,6 +475,30 @@ function Perfil(){
                         <div className='d-flex row w-100 gx-2 gy-2'>
                             <div className='col-sm-6'><button className='btn w-100 btn-secondary bordas-arredondadas' type='button' onClick={fecharModalEmail}><i className='fa fa-chevron-left' aria-hidden='true'></i> Voltar</button></div>
                             <div className='col-sm-6'><button className='btn w-100 btn-primary bordas-arredondadas' type='submit'><i className='fa fa-check' aria-hidden='true'></i> Confirmar</button></div>
+                        </div>
+                    </Modal.Footer>
+                </form>
+            </Modal>
+
+            <Modal className='modal-customizado' show={modalAvatar} animation={true} onHide={fecharModalAvatar}>
+                <Modal.Header>
+                    <div className='icon-box'>
+                        <i className='fa fa-envelope mx-auto'></i>
+                    </div>
+                    <h4 className='modal-title mx-auto'>Alteração de Imagem</h4>
+                </Modal.Header>
+
+                <form method='POST' id="form-imagem-avatar" onSubmit={AlterarImagemPerfil} enctype="multipart/form-data">
+                    <Modal.Body>
+                        <p className='text-center'>Para prosseguir com a alteração da sua imagem de perfil, selecione a imagem desejada:</p>
+                        <div className='form-group mt-3'>
+                            <input type="file" required accept="image/*" name="avatar" />
+                        </div>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <div className='d-flex row w-100 gx-2 gy-2'>
+                            <div className='col-sm-6'><button className='btn w-100 btn-secondary bordas-arredondadas'  type='button' onClick={fecharModalAvatar}><i className='fa fa-chevron-left' aria-hidden='true'></i> Voltar</button></div>
+                            <div className='col-sm-6'><button className='btn w-100 btn-primary bordas-arredondadas' name='upload' type='submit'><i className='fa fa-check' aria-hidden='true'></i> Alterar</button></div>
                         </div>
                     </Modal.Footer>
                 </form>
