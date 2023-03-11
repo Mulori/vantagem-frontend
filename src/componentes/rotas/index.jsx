@@ -10,6 +10,7 @@ import DetalheVeiculo from "../paginas/meusVeiculos/detalheVeiculo";
 import Alunos from "../paginas/alunos";
 import CadastrarAluno from "../paginas/alunos/cadastrarAlunos";
 import PaginaRota from "../paginas/rotas";
+import Imagem from "../paginas/imagem";
 
 import Navbar from "../layouts/navbar";
 
@@ -31,6 +32,7 @@ function Rotas() {
                 <Route path="/alunos" element={<RotaPrivada> <Alunos/> </RotaPrivada>}/>
                 <Route path="/alunos/cadastrar" element={<RotaPrivada> <CadastrarAluno/> </RotaPrivada>}/>
                 <Route path="/rotas" element={<RotaPrivada> <PaginaRota/> </RotaPrivada>}/>
+                <Route path="/imagem" element={<RotaPrivada> <Imagem/> </RotaPrivada>}/>
             </Routes>
         </BrowserRouter>
     )

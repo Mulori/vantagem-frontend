@@ -16,20 +16,7 @@ function Rotas() {
             $('#navbar-rotas').addClass('active');
         }
     });
-
-    function onSubmit(e){
-        e.preventDefault();
-
-        let formData = new FormData();
-            formData.append('upload', e.target[0].files[0]);
-            console.log(formData);
-            api.post("/api/v1/upload/avatar/" + localStorage.getItem("codigo_usuario_vantagem"), formData, { headers: { Authorization: localStorage.getItem('token_usuario_vantagem') } })
-            .then(res => {
-                console.log(res.data.payload)
-            })
-            .catch(console.log);            
-    }
-
+    
     return(
         <div className='p-2'>
             <Card className='card-veiculos'>
