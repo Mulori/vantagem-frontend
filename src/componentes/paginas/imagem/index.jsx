@@ -3,11 +3,13 @@
 function Imagem(){
     const url = localStorage.getItem('exibir_imagem');
 
-    document.body.style.backgroundColor = '#000';
+
+    document.body.style = "background-image: url('" + url + "'); background-repeat: no-repeat; background-size: cover; background-attachment:fixed;";
+
+    document.title = 'VANTAGEM | Imagem';
 
     return(
-        <div className="d-flex justify-content-center bg-dark" >
-            <img src={url} style={{position: 'relative', height: '100vh', width: '100vh' }} />
+        <div class="text-center">
         </div>
     )
 }
