@@ -222,6 +222,12 @@ function Perfil(){
         }
     });
 
+    function ExibirImagemFullScreen(url){
+        localStorage.removeItem('exibir_imagem');
+        localStorage.setItem('exibir_imagem', url);
+        Navegacao('/imagem');
+    }
+
     const notificarErro = (e) => toast.error(e, {
         position: "top-center",
         autoClose: 5000,
@@ -258,7 +264,9 @@ function Perfil(){
                                     <div className='row'>
                                         <div className='col-12 col-sm-auto mb-3 d-flex justify-content-center'>
                                             <div id='div-imagem-perfil'>
-                                                <img src={urlAvatar ? urlAvatar : semAvatar} className='imagem-avatar imagem-cicle imagem-thumbnail mx-auto'/>
+                                                <a onClick={() => ExibirImagemFullScreen(urlAvatar)} >
+                                                    <img src={urlAvatar ? urlAvatar : semAvatar} className='imagem-avatar imagem-cicle imagem-thumbnail mx-auto'/>
+                                                </a>
                                             </div>
                                         </div>                                            
                                         <div className='col d-flex flex-column flex-sm-row justify-content-between mb-3'>

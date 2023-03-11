@@ -58,7 +58,7 @@ function Navbar() {
     });
 
     var caminho_atual = useLocation();
-    if (caminho_atual.pathname !== '/login' && caminho_atual.pathname !== '/registro') {
+    if (caminho_atual.pathname !== '/login' && caminho_atual.pathname !== '/registro' && caminho_atual.pathname !== '/imagem') {
         return (
 
             <nav className='navbar navbar-expand-lg navbar-light m-2 navbar-mainbg'>
