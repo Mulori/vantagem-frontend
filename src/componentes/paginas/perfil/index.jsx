@@ -223,6 +223,11 @@ function Perfil(){
     });
 
     function ExibirImagemFullScreen(url){
+
+        if(!urlAvatar){
+            return;
+        }
+
         localStorage.removeItem('exibir_imagem');
         localStorage.setItem('exibir_imagem', url);
         Navegacao('/imagem');
